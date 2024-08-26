@@ -19,3 +19,16 @@ class Administrador(Base):
     id = Column(Integer, primary_key=True, autoincrement=True)
     id_administrador= Column(Integer, ForeignKey("persona.id", ondelete="CASCADE"), \
                         nullable=True)
+class Eleccion(Base):
+    __tablename__ = "eleccion"
+    id = Column(Integer, primary_key=True, autoincrement=True)
+
+
+
+
+
+class Lista(Base):
+    __tablename__ = "lista"
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    id_= Column(Integer, ForeignKey("persona.id", ondelete="CASCADE"), \
+                        nullable=True)

@@ -1,5 +1,6 @@
 from .database import Base
 from sqlalchemy import Integer, Column, String, ForeignKey
+from sqlalchemy.sql.sqltypes import TIMESTAMP, Time
 
 class Persona(Base):
     __tablename__= "persona"
@@ -22,6 +23,8 @@ class Administrador(Base):
 class Eleccion(Base):
     __tablename__ = "eleccion"
     id = Column(Integer, primary_key=True, autoincrement=True)
+    fecha = Column(TIMESTAMP(timezone=True), nullable=False)
+    hora_inicio = Column(Time, )
 
 
 

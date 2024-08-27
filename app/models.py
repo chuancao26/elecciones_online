@@ -9,29 +9,23 @@ class Persona(Base):
     apellido_paterno = Column(String, nullable = False)
     apellido_materno = Column(String, nullable = False)
     usuario = Column(String, unique = True, nullable = True)
-    password = Column(String, nullable=False) 
+    password = Column(String, nullable=False)
 class Elector(Base):
     __tablename__ = "elector"
     id = Column(Integer, primary_key=True, autoincrement=True)
-    id_persona = Column(Integer, ForeignKey("persona.id", ondelete="CASCADE"), \
-                        nullable=True)
+    id_persona = Column(Integer, ForeignKey("persona.id", ondelete="CASCADE"), nullable=True)
 class Administrador(Base):
     __tablename__ = "administrador"
     id = Column(Integer, primary_key=True, autoincrement=True)
-    id_administrador= Column(Integer, ForeignKey("persona.id", ondelete="CASCADE"), \
-                        nullable=True)
+    id_administrador= Column(Integer, ForeignKey("persona.id", ondelete="CASCADE"), nullable=True)
 class Eleccion(Base):
     __tablename__ = "eleccion"
     id = Column(Integer, primary_key=True, autoincrement=True)
     fecha = Column(TIMESTAMP(timezone=True), nullable=False)
-    hora_inicio = Column(Time, )
-
-
-
-
+    hora_inicio = Column(Time, nulleable=False)
+    hora_fin = Column(Time, nulleable=False)
+    descripcion = Column(String, nullable=False, server_default="")
 
 class Lista(Base):
     __tablename__ = "lista"
     id = Column(Integer, primary_key=True, autoincrement=True)
-    id_= Column(Integer, ForeignKey("persona.id", ondelete="CASCADE"), \
-                        nullable=True)

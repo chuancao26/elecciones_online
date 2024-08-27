@@ -1,4 +1,4 @@
-#!/home/chuancao26/Projects/backend_practice/personal_blog_ap/venv/bin/python3
+#!/home/chuancao26/eleccionesAPI/venv/bin/python
 # -*- coding: utf-8 -*-
 import re
 import sys

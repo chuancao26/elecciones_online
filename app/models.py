@@ -1,4 +1,4 @@
-from .database import Base
+from app.database import Base
 from sqlalchemy import Integer, Column, String, ForeignKey
 from sqlalchemy.sql.sqltypes import TIMESTAMP, Time
 
@@ -29,3 +29,12 @@ class Eleccion(Base):
 class Lista(Base):
     __tablename__ = "lista"
     id = Column(Integer, primary_key=True, autoincrement=True)
+    nombre = Column(String, nullable=False)
+    id_eleccion = Column(Integer, ForeignKey("eleccion.id", ondelete="CASCADE"), nullable=False)
+    propuesta = Column(String, nullable=False, server_default="")
+class Candidato(Base):
+    __tablename__ = "candidato"
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    id_lista = Column(ForeignKey("lista.id", ondelete="CASCADE"), nullable=False)
+    id_persona
+

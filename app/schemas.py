@@ -7,3 +7,25 @@ class EleccionCreate(BaseModel):
     descripcion: str
 class EleccionOut(EleccionCreate):
     id: int
+
+class ListaCreate(BaseModel):
+    nombre: str
+    id_eleccion: int
+    propuesta: str
+
+class ListaOut(ListaCreate):
+    id: int
+
+class PersonaCreate(BaseModel):
+    nombres: str
+    apellido_paterno: str
+    apellido_materno: str
+    usuario: str
+    password: str
+
+class PersonaOut(BaseModel):
+    id: int
+    nombres: str
+    apellido_paterno: str
+    apellido_materno: str
+    usuario: str

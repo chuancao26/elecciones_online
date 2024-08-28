@@ -1,5 +1,7 @@
-from fastapi import APIRouter, Depends
+from fastapi import APIRouter, Depends, HTTPException, status
+
 from sqlalchemy.orm import Session
+
 from app.database import get_db
 from typing import List
 
@@ -20,3 +22,28 @@ def create_election(election: schemas.EleccionCreate, db: Session = Depends(get_
     db.commit()
     db.refresh(new_election)
     return new_election
+@router.get("/{id}", response_model=schemas.EleccionOut, status_code=status.HTTP_201_CREATED)
+def get_election(id: int, db: Session = Depends(get_db)):
+    election = db.query(models.Eleccion).filter(models.Eleccion.id == id)
+    if election.first() is None:
+        raise HTTPException(status_code=404, detail=f"id: {id} not found")
+    return election.first()
+@router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_election(id: int, db: Session = Depends(get_db)):
+    election = db.query(models.Eleccion).filter(models.Eleccion.id == id)
+    if election.first() is None:
+        raise HTTPException(status_code=404, detail=f"id: {id} not found")
+    election.delete(synchronize_session=False)
+    db.commit()
+    return HTTPException(status_code=status.HTTP_204_NO_CONTENT)
+@router.put("/{id}", response_model=schemas.EleccionOut, status_code=status.HTTP_200_OK)
+def update_election(election: schemas.EleccionCreate, id: int, db: Session = Depends(get_db)):
+    updated_election = db.query(models.Eleccion).filter(models.Eleccion.id == id)
+    if updated_election.first() is None:
+        raise HTTPException(status_code=404, detail=f"id: {id} not found")
+    updated_election.update(election.model_dump(), synchronize_session=False)
+    db.commit()
+    return updated_election.first()
+
+
+

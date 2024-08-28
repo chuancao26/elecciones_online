@@ -6,7 +6,7 @@ from app.database import get_db
 from app.utils import hash_password, verify_password
 from typing import List
 
-from app import schemas, models
+from app import schemas, models, oauth2
 
 router = APIRouter(
     tags=["elector"],
@@ -18,7 +18,7 @@ def create_persona(new_persona: models.Persona, db: Session = Depends(get_db)):
     db.refresh(new_persona)
 
 @router.get("/", response_model=List[schemas.PersonaOut])
-def get_persona(db: Session = Depends(get_db)):
+def get_persona(db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)):
     personas = db.query(models.Persona).all()
     return personas
 @router.post("/", status_code=status.HTTP_201_CREATED, response_model=schemas.PersonaOut)

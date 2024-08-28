@@ -19,7 +19,7 @@ class Elector(Base):
 class Administrador(Base):
     __tablename__ = "administrador"
     id = Column(Integer, primary_key=True, autoincrement=True)
-    id_administrador= Column(Integer, ForeignKey("persona.id", ondelete="CASCADE"), nullable=True)
+    id_persona = Column(Integer, ForeignKey("persona.id", ondelete="CASCADE"), nullable=True)
 
 class Eleccion(Base):
     __tablename__ = "eleccion"

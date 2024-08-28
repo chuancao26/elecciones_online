@@ -1,5 +1,7 @@
 from pydantic import BaseModel
 from datetime import datetime, time
+from typing import Optional
+
 class EleccionCreate(BaseModel):
     fecha: datetime
     hora_inicio: time
@@ -29,3 +31,11 @@ class PersonaOut(BaseModel):
     apellido_paterno: str
     apellido_materno: str
     usuario: str
+
+class TokenCreated(BaseModel):
+    access_token: str
+    token_type: str
+
+class TokenData(BaseModel):
+    id: Optional[int] = None
+    type_user: Optional[str] = None

@@ -18,20 +18,36 @@ def create_persona(new_persona: models.Persona, db: Session = Depends(get_db)):
     db.refresh(new_persona)
 
 @router.get("/", response_model=List[schemas.PersonaOut])
-def get_persona(db: Session = Depends(get_db), current_user: int = Depends(oauth2.get_current_user)):
-    personas = db.query(models.Persona).all()
-    return personas
+def get_persona(db: Session = Depends(get_db), current_user: schemas.TokenData = Depends(oauth2.get_current_admin)):
+    elector = db.query(models.Persona).join(models.Elector, models.Elector.id_persona == models.Persona.id).all()
+    return elector
 @router.post("/", status_code=status.HTTP_201_CREATED, response_model=schemas.PersonaOut)
 def create_elector(elector: schemas.PersonaCreate, db: Session = Depends(get_db)):
     persona = db.query(models.Persona).filter(models.Persona.usuario == elector.usuario).first()
     if persona:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Elector ya existe")
+
     elector.password = hash_password(elector.password)
+
     new_persona = models.Persona(**elector.model_dump())
     create_persona(new_persona, db)
+
     persona = db.query(models.Persona).filter(models.Persona.usuario == elector.usuario).first()
     new_elector = models.Elector(id_persona=persona.id)
     db.add(new_elector)
     db.commit()
     db.refresh(new_elector)
     return persona
+@router.get("/{id}", response_model=schemas.PersonaOut)
+def get_elector(id: int, db: Session = Depends(get_db), current_user: schemas.TokenData = Depends(oauth2.get_current_admin)):
+    elector = (
+        db.query(models.Persona)
+       .join(models.Elector, models.Elector.id_persona == models.Persona.id)
+       .filter(models.Persona.id == id)
+       .first()
+    )
+    if elector is None:
+        raise HTTPException(status_code=404, detail=f"user with id: {id} not found")
+    return elector
+
+

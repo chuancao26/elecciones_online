@@ -30,7 +30,6 @@ class PersonaOut(BaseModel):
     nombres: str
     apellido_paterno: str
     apellido_materno: str
-    usuario: str
 
 class TokenCreated(BaseModel):
     access_token: str

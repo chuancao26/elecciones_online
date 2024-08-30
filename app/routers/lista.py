@@ -24,6 +24,10 @@ def get_lists(id: int, db: Session = Depends(get_db)):
     return list
 @router.post("/", status_code=status.HTTP_201_CREATED, response_model=schemas.ListaOut)
 def create_list(list: schemas.ListaCreate, db: Session = Depends(get_db)):
+    election = db.query(models.Eleccion).filter(models.Eleccion.id==list.id_eleccion).first()
+    if election is None:
+        raise HTTPException(status_code=404,
+                             detail=f"Election with id: {list.id_eleccion} does not exist") 
     new_list = models.Lista(**list.model_dump())
     db.add(new_list)
     db.commit()

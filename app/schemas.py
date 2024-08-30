@@ -7,6 +7,7 @@ class EleccionCreate(BaseModel):
     hora_inicio: time
     hora_fin: time
     descripcion: str
+
 class EleccionOut(EleccionCreate):
     id: int
 
@@ -38,3 +39,9 @@ class TokenCreated(BaseModel):
 class TokenData(BaseModel):
     id: Optional[int] = None
     type_user: Optional[str] = None
+
+class CandidatoCreate(BaseModel):
+    nombres: str
+    apellido_paterno: str
+    apellido_materno: str
+    id_lista: int

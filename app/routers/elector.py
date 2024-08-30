@@ -25,7 +25,8 @@ def get_persona(db: Session = Depends(get_db), current_user: schemas.TokenData =
 def create_elector(elector: schemas.PersonaCreate, db: Session = Depends(get_db)):
     persona = db.query(models.Persona).filter(models.Persona.usuario == elector.usuario).first()
     if persona:
-        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Elector ya existe")
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST
+                            , detail=f"User with username: {elector.usuario} already exists")
 
     elector.password = hash_password(elector.password)
 

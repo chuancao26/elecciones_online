@@ -47,3 +47,4 @@ class CandidatoCreate(BaseModel):
     id_lista: int
 
 class VotoCreate(BaseModel):
+    id_lista: int

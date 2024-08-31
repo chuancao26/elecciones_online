@@ -46,6 +46,13 @@ class Candidato(Base):
 
 class Voto(Base):
     __tablename__ = "voto"
-    id = Column(Integer, primary_key=True, autoincrement=True)
-    id_lista = Column(ForeignKey("lista.id", ondelete="CASCADE"), nullable=False)
-    id_elector = Column(Integer, ForeignKey("eleccion.id", ondelete="CASCADE"), nullable=False)
+    id_lista = Column(Integer,
+                      ForeignKey("lista.id", ondelete="CASCADE"),
+                      primary_key=True,
+                      nullable=False
+                      )
+    id_elector = Column(Integer,
+                        ForeignKey("elector.id", ondelete="CASCADE"),
+                        primary_key=True,
+                        nullable=False
+                        )

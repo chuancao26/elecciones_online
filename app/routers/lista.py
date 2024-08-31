@@ -5,7 +5,7 @@ from sqlalchemy.orm import Session
 from app.database import get_db
 from typing import List
 
-from app import schemas, models
+from app import schemas, models, oauth2
 
 router = APIRouter(
     tags=["Lista"],
@@ -13,11 +13,14 @@ router = APIRouter(
 )
 
 @router.get("/", response_model=List[schemas.ListaOut])
-def get_lists(db: Session = Depends(get_db)):
+def get_lists(db: Session = Depends(get_db),
+              current_admin: schemas.TokenData=Depends(oauth2.get_current_admin)):
     lists = db.query(models.Lista).all()
     return lists
 @router.get("/{id}", response_model=List[schemas.ListaOut])
-def get_lists(id: int, db: Session = Depends(get_db)):
+def get_lists(id: int,
+              db: Session = Depends(get_db),
+              current_admin: schemas.TokenData=Depends(oauth2.get_current_admin)):
     list = db.query(models.Lista).filter(models.Lista.id == id).first()
     if list is None:
         raise HTTPException(status_code=404, detail=f"Lista with id: {id} not found")

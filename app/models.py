@@ -43,3 +43,9 @@ class Candidato(Base):
     apellido_paterno = Column(String, nullable = False)
     apellido_materno = Column(String, nullable = False)
     id_lista = Column(ForeignKey("lista.id", ondelete="CASCADE"), nullable=False)
+
+class Voto(Base):
+    __tablename__ = "voto"
+    id = Column(Integer, primary_key=True, autoincrement=True)
+    id_lista = Column(ForeignKey("lista.id", ondelete="CASCADE"), nullable=False)
+    id_elector = Column(Integer, ForeignKey("eleccion.id", ondelete="CASCADE"), nullable=False)

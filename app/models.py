@@ -1,5 +1,6 @@
 from app.database import Base
 from sqlalchemy import Integer, Column, String, ForeignKey
+from sqlalchemy.orm import Relationship
 from sqlalchemy.sql.sqltypes import TIMESTAMP, Time
 
 class Persona(Base):
@@ -35,6 +36,7 @@ class Lista(Base):
     nombre = Column(String, nullable=False)
     id_eleccion = Column(Integer, ForeignKey("eleccion.id", ondelete="CASCADE"), nullable=False)
     propuesta = Column(String, nullable=False, server_default="")
+    eleccion = Relationship("Eleccion")
 
 class Candidato(Base):
     __tablename__ = "candidato"

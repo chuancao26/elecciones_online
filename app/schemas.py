@@ -18,6 +18,7 @@ class ListaCreate(BaseModel):
 
 class ListaOut(ListaCreate):
     id: int
+    eleccion: EleccionCreate
 
 class PersonaCreate(BaseModel):
     nombres: str

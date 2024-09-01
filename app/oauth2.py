@@ -34,7 +34,14 @@ def verify_access_token(token: str,  credentials_exception):
     except JWTError:
         raise credentials_exception
     return token_data
-
+def get_current_general(token: str=Depends(oauth2), db: Session=Depends(database.get_db)):
+    credentials_exception = HTTPException(
+        status_code=401,
+        detail="Could not validate credentials",
+        headers={"WWW-Authenticate": "Bearer"}
+    )
+    token = verify_access_token(token, credentials_exception)
+    return token
 def get_current_elector(token: str = Depends(oauth2), db: Session = Depends(database.get_db)):
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,

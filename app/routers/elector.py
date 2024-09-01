@@ -18,12 +18,21 @@ def create_persona(new_persona: models.Persona, db: Session = Depends(get_db)):
     db.refresh(new_persona)
 
 @router.get("/", response_model=List[schemas.PersonaOut])
-def get_persona(db: Session = Depends(get_db), current_user: schemas.TokenData = Depends(oauth2.get_current_admin)):
-    elector = db.query(models.Persona).join(models.Elector, models.Elector.id_persona == models.Persona.id).all()
+def get_persona(db: Session = Depends(get_db),
+                current_user: schemas.TokenData = Depends(oauth2.get_current_admin)):
+    elector = (
+        db.query(models.Persona)
+        .join(models.Elector, models.Elector.id_persona == models.Persona.id)
+        .all()
+        )
     return elector
 @router.post("/", status_code=status.HTTP_201_CREATED, response_model=schemas.PersonaOut)
 def create_elector(elector: schemas.PersonaCreate, db: Session = Depends(get_db)):
-    persona = db.query(models.Persona).filter(models.Persona.usuario == elector.usuario).first()
+    persona = (
+        db.query(models.Persona)
+        .filter(models.Persona.usuario == elector.usuario)
+        .first()
+    )
     if persona:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST
                             , detail=f"User with username: {elector.usuario} already exists")
@@ -40,7 +49,8 @@ def create_elector(elector: schemas.PersonaCreate, db: Session = Depends(get_db)
     db.refresh(new_elector)
     return persona
 @router.get("/{id}", response_model=schemas.PersonaOut)
-def get_elector(id: int, db: Session = Depends(get_db), current_user: schemas.TokenData = Depends(oauth2.get_current_admin)):
+def get_elector(id: int, db: Session = Depends(get_db), 
+                current_user: schemas.TokenData = Depends(oauth2.get_current_admin)):
     elector = (
         db.query(models.Persona)
        .join(models.Elector, models.Elector.id_persona == models.Persona.id)

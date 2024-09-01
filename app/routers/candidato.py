@@ -26,4 +26,12 @@ def create_candidate(candidate: schemas.CandidatoCreate,
     db.refresh(new_lista)
     return new_lista
 
-    
+@router.get("/", response_model=List[schemas.CandidatoOut])
+def get_candidates(db: Session=Depends(get_db)):
+    candidates = (
+        db.query(models.Candidato, models.Lista.nombre)
+        .join(models.Lista, models.Lista.id == models.Candidato.id_lista)
+        .all()
+    ) 
+    result = [{"candidato": candidate, "nombre_lista": name } for candidate, name in candidates]
+    return result

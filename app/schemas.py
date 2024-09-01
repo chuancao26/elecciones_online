@@ -45,6 +45,9 @@ class CandidatoCreate(BaseModel):
     apellido_paterno: str
     apellido_materno: str
     id_lista: int
+class CandidatoOut(BaseModel):
+    candidato: CandidatoCreate
+    nombre_lista: str
 
 class VotoCreate(BaseModel):
     id_lista: int

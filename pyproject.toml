@@ -1,21 +1,24 @@
 [tool.poetry]
-name = "poetry add fastapi uvicorn[standard]"
+name = "app"
 version = "0.1.0"
-description = "package standar principal fastapi"
-authors = ["Chuancao26"]
-readme = "README.md"
+description = "Este es un proyecto para el curso de Ingeniería de Software II. Sistema de votación online."
+authors = [
+  "Arleen Maritza Ferro Vasquez <aferro@unsa.edu.pe>",
+  "Wilson Isaac Mamani Casilla <wmamani@unsa.edu.pe>",
+  "Jazmin Gabriela Perez Villasante <jperez@unsa.edu.pe>",
+  "Cristhian David Huanca Olazabal <chuancao@unsa.edu.pe>",
+  "Sebastian Andres Mendoza Fernandez <smendoza@unsa.edu.pe>"
+]
+license = "MIT"
 
 [tool.poetry.dependencies]
 python = "^3.10"
-pytest = "^8.3.3"
-alembic = "^1.13.3"
 fastapi = {extras = ["standard"], version = "^0.115.0"}
-pyjwt = "^2.9.0"
-sqlalchemy = "^2.0.35"
-passlib = {extras = ["bcrypt"], version = "^1.7.4"}
+alembic = "^1.13.3"
 pydantic-settings = "^2.5.2"
 psycopg2-binary = "^2.9.9"
-
+passlib = "^1.7.4"
+pyjwt = "^2.9.0"
 
 [build-system]
 requires = ["poetry-core"]

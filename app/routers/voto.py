@@ -22,6 +22,9 @@ def create_vote(vote: schemas.VotoCreate,
     if lista is None:
         raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
                             detail=f"list with id: {vote.id_lista} not found")
+    if lista.id_eleccion is not vote.id_eleccion:
+        raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST,
+                            detail=f"list with id: {vote.id_lista} dont belong to eleccion")
     new_vote = models.Voto(id_lista=vote.id_lista, id_elector=current_user.id)
     try:
         db.add(new_vote)

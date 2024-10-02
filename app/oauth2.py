@@ -1,4 +1,5 @@
-from jose import JWTError, jwt
+import jwt
+from jwt.exceptions import InvalidTokenError
 
 from fastapi.security import OAuth2PasswordBearer
 from fastapi import Depends, status, HTTPException
@@ -31,7 +32,7 @@ def verify_access_token(token: str,  credentials_exception):
         if id_obtained is None:
             raise credentials_exception
         token_data = schemas.TokenData(id=id_obtained, type_user=type_user_obtained)
-    except JWTError:
+    except InvalidTokenError:
         raise credentials_exception
     return token_data
 def get_current_general(token: str=Depends(oauth2), db: Session=Depends(database.get_db)):

@@ -44,4 +44,11 @@ def login(user_credentials: OAuth2PasswordRequestForm = Depends(),
     else:
         raise HTTPException(status_code=404, detail="Duplicated User")
 
-
+@router.get("/", response_model=schemas.TokenData)
+def get_current_user(token: str):
+    credentials_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Problems with credentials, token not valid",
+        headers={"WWW-Authenticate": "Bearer"}
+    )
+    return oauth2.verify_access_token(token, credentials_exception)

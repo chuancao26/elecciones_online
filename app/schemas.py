@@ -56,5 +56,5 @@ class VotoCreate(BaseModel):
     id_lista: int
 
 class CurrentUserData(BaseModel):
-    persona: PersonaCreate
-    token: TokenData
+    persona: PersonaOut
+    type_user: str

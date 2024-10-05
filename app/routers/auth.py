@@ -44,11 +44,45 @@ def login(user_credentials: OAuth2PasswordRequestForm = Depends(),
     else:
         raise HTTPException(status_code=404, detail="Duplicated User")
 
-@router.get("/", response_model=schemas.TokenData)
-def get_current_user(token: str):
+@router.get("/", response_model=schemas.CurrentUserData)
+def get_current_user(token: str, db: Session = Depends(get_db)):
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Problems with credentials, token not valid",
         headers={"WWW-Authenticate": "Bearer"}
     )
-    return oauth2.verify_access_token(token, credentials_exception)
+    token = oauth2.verify_access_token(token, credentials_exception)
+    if token.type_user == "elector":
+        elector = (
+            db.query(models.Elector.id,
+                     models.Persona.nombres,
+                     models.Persona.apellido_paterno,
+                     models.Persona.apellido_materno)
+            .join(models.Elector, models.Elector.id_persona == models.Persona.id)
+            .filter(models.Elector.id == token.id)
+            .first()
+        )
+        elector = schemas.PersonaOut(id=elector.id,
+                                     nombres=elector.nombres,
+                                     apellido_paterno=elector.apellido_paterno,
+                                     apellido_materno=elector.apellido_materno)
+        current_user_data = schemas.CurrentUserData(persona=elector, type_user=token.type_user)
+        return current_user_data
+    else:
+        admin = (
+            db.query(models.Administrador.id,
+                     models.Persona.nombres,
+                     models.Persona.apellido_paterno,
+                     models.Persona.apellido_materno)
+           .join(models.Administrador, models.Administrador.id_persona == models.Persona.id)
+           .filter(models.Administrador.id == token.id)
+           .first()
+        )
+        print(token.id)
+        admin= schemas.PersonaOut(id=admin.id,
+                                  nombres=admin.nombres,
+                                  apellido_paterno=admin.apellido_paterno,
+                                  apellido_materno=admin.apellido_materno)
+        current_user_data = schemas.CurrentUserData(persona=admin, type_user=token.type_user)
+        return current_user_data
+

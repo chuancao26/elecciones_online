@@ -21,10 +21,13 @@ def create_persona(new_persona: models.Persona, db: Session = Depends(get_db)):
 def get_persona(db: Session = Depends(get_db),
                 current_user: schemas.TokenData = Depends(oauth2.get_current_admin)):
     elector = (
-        db.query(models.Persona)
+        db.query(models.Elector.id,
+                 models.Persona.nombres,
+                 models.Persona.apellido_paterno,
+                 models.Persona.apellido_materno)
         .join(models.Elector, models.Elector.id_persona == models.Persona.id)
         .all()
-        )
+    )
     return elector
 @router.post("/", status_code=status.HTTP_201_CREATED, response_model=schemas.PersonaOut)
 def create_elector(elector: schemas.PersonaCreate, db: Session = Depends(get_db)):
@@ -52,10 +55,13 @@ def create_elector(elector: schemas.PersonaCreate, db: Session = Depends(get_db)
 def get_elector(id: int, db: Session = Depends(get_db), 
                 current_user: schemas.TokenData = Depends(oauth2.get_current_admin)):
     elector = (
-        db.query(models.Persona)
-       .join(models.Elector, models.Elector.id_persona == models.Persona.id)
-       .filter(models.Persona.id == id)
-       .first()
+        db.query(models.Elector.id,
+                 models.Persona.nombres,
+                 models.Persona.apellido_paterno,
+                 models.Persona.apellido_materno)
+        .join(models.Elector, models.Elector.id_persona == models.Persona.id)
+        .filter(models.Elector.id == id)
+        .first()
     )
     if elector is None:
         raise HTTPException(status_code=404, detail=f"user with id: {id} not found")

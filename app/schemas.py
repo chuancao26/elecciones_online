@@ -54,3 +54,7 @@ class CandidatoOut(BaseModel):
 class VotoCreate(BaseModel):
     id_eleccion: int 
     id_lista: int
+
+class CurrentUserData(BaseModel):
+    persona: PersonaOut
+    type_user: str

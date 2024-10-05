@@ -44,11 +44,29 @@ def login(user_credentials: OAuth2PasswordRequestForm = Depends(),
     else:
         raise HTTPException(status_code=404, detail="Duplicated User")
 
-@router.get("/", response_model=schemas.TokenData)
-def get_current_user(token: str):
+@router.get("/", response_model=schemas.CurrentUserData)
+def get_current_user(token_raw: str, db: Session = Depends(get_db)):
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
         detail="Problems with credentials, token not valid",
         headers={"WWW-Authenticate": "Bearer"}
     )
-    return oauth2.verify_access_token(token, credentials_exception)
+    token = oauth2.verify_access_token(token_raw, credentials_exception)
+    if token.type_user == "elector":
+        elector = (
+            db.query(models.Persona)
+            .join(models.Elector, models.Elector.id_persona == models.Persona.id)
+            .filter(models.Persona.id == token.id)
+            .first()
+        )
+        current_user_data = schemas.CurrentUserData(persona=elector, token=token)
+        return current_user_data
+    else:
+        admin = (db.query(models.Persona)
+                 .join(models.Administrador, models.Administrador.id_persona == models.Persona.id)
+                 .filter(models.Persona.id == token.id)
+                 .first()
+                 )
+        current_user_data = schemas.CurrentUserData(persona=admin, token=token)
+        return current_user_data
+

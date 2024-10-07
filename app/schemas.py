@@ -52,7 +52,6 @@ class CandidatoOut(BaseModel):
     nombre_lista: str
 
 class VotoCreate(BaseModel):
-    id_eleccion: int 
     id_lista: int
 
 class CurrentUserData(BaseModel):

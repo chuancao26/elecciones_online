@@ -10,8 +10,7 @@ from app import schemas, models, oauth2
 router = APIRouter(prefix="/eleccion",
                    tags=["eleccion"])
 @router.get("/", response_model=List[schemas.EleccionOut])
-def get_elections(db: Session = Depends(get_db),
-                 current_user: schemas.TokenData = Depends(oauth2.get_current_admin)):
+def get_elections(db: Session = Depends(get_db)):
     elections = db.query(models.Eleccion).all()
     return elections
 

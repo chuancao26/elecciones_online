@@ -19,6 +19,7 @@ pydantic-settings = "^2.5.2"
 psycopg2-binary = "^2.9.9"
 passlib = "^1.7.4"
 pyjwt = "^2.9.0"
+pytest = "^8.3.3"
 
 [build-system]
 requires = ["poetry-core"]

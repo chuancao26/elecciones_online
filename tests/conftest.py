@@ -105,5 +105,20 @@ def create_elections(authorized_admin_client, session):
     elections = session.query(models.Eleccion).all()
     return elections
 
-
-
+@pytest.fixture
+def create_listas(session):
+    data = [
+        {"nombre": "Lista 1", "id_eleccion": 1, "propuesta": "Propuesta 1"},
+        {"nombre": "Lista 2", "id_eleccion": 1, "propuesta": "Propuesta 2"},
+        {"nombre": "Lista 1", "id_eleccion": 2, "propuesta": "Propuesta 3"},
+        {"nombre": "Lista 2", "id_eleccion": 2, "propuesta": "Propuesta 4"},
+        {"nombre": "Lista 1", "id_eleccion": 3, "propuesta": "Propuesta 5"},
+        {"nombre": "Lista 2", "id_eleccion": 3, "propuesta": "Propuesta 6"},
+        {"nombre": "Lista 1", "id_eleccion": 4, "propuesta": "Propuesta 7"},
+        {"nombre": "Lista 1", "id_eleccion": 4, "propuesta": "Propuesta 8"}
+    ]
+    listas = [models.Lista(**lista) for lista in data]
+    session.add_all(listas)
+    session.commit()
+    listas = session.query(models.Lista).all()
+    return listas

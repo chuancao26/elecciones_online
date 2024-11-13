@@ -35,3 +35,25 @@ def get_candidates(db: Session=Depends(get_db)):
     ) 
     result = [{"candidato": candidate, "nombre_lista": name } for candidate, name in candidates]
     return result
+
+@router.put("/{id}", response_model= schemas.CandidatoOut, status_code=202)
+def update_a_candidate(id: int, new_candidate: schemas.CandidatoCreate,
+                       db: Session=Depends(get_db),
+                       current_admin: schemas.TokenData=Depends(oauth2.get_current_admin)):
+    current_candidate = db.query(models.Candidato).filter(models.Candidato.id == id)
+    if current_candidate.first() is None:
+        return HTTPException(status_code=404, detail=f"Candidate with id {id} not found!")
+    current_candidate.update(new_candidate.model_dump(), synchronize_session=False)
+    db.add(current_candidate)
+    db.commit()
+    return current_candidate.first()
+@router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
+def delete_a_candidate(id: int,
+                       db: Session=Depends(get_db),
+                       current_admin: schemas.TokenData = Depends(oauth2.get_current_admin)):
+    current_candidate = db.query(models.Candidato).filter(models.Candidato.id == id)
+    if current_candidate.first() is None:
+        return HTTPException(status_code=404, detail=f"Candidate with id {id} not found!")
+    current_candidate.delete()
+    db.commit()
+    return HTTPException(status_code=status.HTTP_204_NO_CONTENT)

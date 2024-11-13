@@ -10,6 +10,10 @@ from app.database import get_db, Base
 from app.oauth2 import create_access_token
 
 from app import models
+from selenium import webdriver
+
+from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.chrome.service import Service as ChromeService
 
 SQLALCHEMY_DATABASE_URL = f"postgresql://{settings.database_username}:{settings.database_password}@{settings.database_hostname}/{settings.database_name}_test"
 
@@ -35,6 +39,15 @@ def client(session):
             session.close()
     app.dependency_overrides[get_db] = override_get_db
     yield TestClient(app)
+
+@pytest.fixture()
+def driver():
+    driver = webdriver.Chrome(service=ChromeService(ChromeDriverManager().install()))
+    driver.implicitly_wait(10)
+
+    yield driver
+    driver.quit()
+
 @pytest.fixture
 def test_elector(client):
     data = {"nombres": "prueba1",

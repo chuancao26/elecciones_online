@@ -73,25 +73,28 @@ def test_admin(client):
     new_user["password"] = data["password"]
     return new_user
 @pytest.fixture
-def authorized_elector_client(client, test_elector):
-    token = create_access_token(data={"id": test_elector["id"], "type_user": "elector"})
+def token_elector(test_elector):
+    return create_access_token(data={"id": test_elector["id"], "type_user": "elector"})
+@pytest.fixture
+def token_admin(test_admin):
+    return create_access_token(data={"id": test_admin["id"], "type_user": "admin"})
+@pytest.fixture
+def authorized_elector_client(client, token_elector):
     client.headers = {
         **client.headers,
-        "Authorization" : f"Bearer {token}"
+        "Authorization" : f"Bearer {token_elector}"
     }
     return client
 @pytest.fixture
-def authorized_admin_client(client, test_admin):
-    token = create_access_token(data={"id": test_admin["id"], "type_user": "admin"})
-    print(token)
+def authorized_admin_client(client, token_admin):
     client.headers = {
         **client.headers,
-        "Authorization" : f"Bearer {token}"
+        "Authorization" : f"Bearer {token_admin}"
     }
     return client
 
 @pytest.fixture
-def create_elections(authorized_admin_client, session):
+def create_elections(session):
     data = [{"fecha": "2024-12-01 00:00:00+00",
             "hora_inicio": "08:00:00",
             "hora_fin": "01:00:00",
@@ -119,7 +122,7 @@ def create_elections(authorized_admin_client, session):
     return elections
 
 @pytest.fixture
-def create_listas(session):
+def create_listas(create_elections, session):
     data = [
         {"nombre": "Lista 1", "id_eleccion": 1, "propuesta": "Propuesta 1"},
         {"nombre": "Lista 2", "id_eleccion": 1, "propuesta": "Propuesta 2"},
@@ -128,10 +131,27 @@ def create_listas(session):
         {"nombre": "Lista 1", "id_eleccion": 3, "propuesta": "Propuesta 5"},
         {"nombre": "Lista 2", "id_eleccion": 3, "propuesta": "Propuesta 6"},
         {"nombre": "Lista 1", "id_eleccion": 4, "propuesta": "Propuesta 7"},
-        {"nombre": "Lista 1", "id_eleccion": 4, "propuesta": "Propuesta 8"}
+        {"nombre": "Lista 2", "id_eleccion": 4, "propuesta": "Propuesta 8"}
     ]
-    listas = [models.Lista(**lista) for lista in data]
-    session.add_all(listas)
+    def make_list(list):
+        return models.Lista(**list)
+    list_lists = map(make_list, data)
+    session.add_all(list_lists)
     session.commit()
     listas = session.query(models.Lista).all()
     return listas
+@pytest.fixture
+def create_candidates(session, create_listas):
+    data = [
+        {"nombres": "Juan", "apellido_paterno": "Rodrigez","apellido_materno": "Malta", "id_lista": 1},
+        {"nombres": "Julian", "apellido_paterno": "Pedro", "apellido_materno": "Duque", "id_lista": 1},
+        {"nombres": "Pedro", "apellido_paterno": "Arauco", "apellido_materno": "Espinoza", "id_lista": 1},
+        {"nombres": "Jerke", "apellido_paterno": "Brion", "apellido_materno": "Miraflores", "id_lista": 1},
+        {"nombres": "Cristhian", "apellido_paterno": "Siene", "apellido_materno": "Gregorio", "id_lista": 1},
+    ]
+    def make_candidate(candidate):
+        return models.Candidato(**candidate)
+    candidates_list = map(make_candidate, data)
+    session.add_all(candidates_list)
+    session.commit()
+    return session.query(models.Candidato).all()

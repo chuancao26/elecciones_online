@@ -25,6 +25,10 @@ def test_update_candidate(authorized_admin_client, create_candidates):
             "apellido_materno": "Malta",
             "id_lista": 1}
     res = authorized_admin_client.put(f"/candidato/{create_candidates[0].id}",json=data)
+    candidate = Candidato(**res.json())
+    assert candidate.nombres == data["nombres"]
+    assert candidate.apellido_paterno == data["apellido_paterno"]
+    assert candidate.apellido_materno == data["apellido_materno"]
     assert res.status_code == 202
 def test_update_unauthorized_candidate(client, create_candidates):
     data = {"nombres": "Carmelo",
@@ -34,7 +38,7 @@ def test_update_unauthorized_candidate(client, create_candidates):
     res = client.put(f"/candidato/{create_candidates[0].id}",json=data)
     assert res.status_code == 401
 
-def test_update_unauthorized_candidate(authorized_admin_client, create_candidates):
+def test_missing_candidate(authorized_admin_client, create_candidates):
     data = {"nombres": "Carmelo",
             "apellido_paterno": "Rodrigez",
             "apellido_materno": "Malta",

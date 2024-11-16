@@ -50,7 +50,16 @@ def create_elector(elector: schemas.PersonaCreate, db: Session = Depends(get_db)
     db.add(new_elector)
     db.commit()
     db.refresh(new_elector)
-    return persona
+    elector = (
+        db.query(models.Elector.id,
+                 models.Persona.nombres,
+                 models.Persona.apellido_paterno,
+                 models.Persona.apellido_materno)
+        .join(models.Elector, models.Elector.id_persona == models.Persona.id)
+        .filter(models.Persona.usuario == new_persona.usuario)
+        .first()
+    )
+    return elector
 @router.get("/{id}", response_model=schemas.PersonaOut)
 def get_elector(id: int, db: Session = Depends(get_db), 
                 current_user: schemas.TokenData = Depends(oauth2.get_current_admin)):

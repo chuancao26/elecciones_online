@@ -33,6 +33,11 @@ class PersonaOut(BaseModel):
     apellido_paterno: str
     apellido_materno: str
 
+class PersonaUpdate(BaseModel):
+    nombres: str
+    apellido_paterno: str
+    apellido_materno: str
+
 class TokenCreated(BaseModel):
     access_token: str
     token_type: str

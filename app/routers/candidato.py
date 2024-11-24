@@ -6,6 +6,7 @@ from app.database import get_db
 from typing import List
 
 from app import schemas, models, oauth2
+from sqlalchemy.exc import IntegrityError
 
 router = APIRouter(
     tags=["candidato"],
@@ -20,11 +21,16 @@ def create_candidate(candidate: schemas.CandidatoCreate,
     if lista is None:
         raise HTTPException(status_code=404,
                             detail=f"List with id: {candidate.id_lista} does not exist!")
-    new_lista = models.Candidato(**candidate.model_dump())
-    db.add(new_lista)
-    db.commit()
-    db.refresh(new_lista)
-    return new_lista
+    try:
+        new_lista = models.Candidato(**candidate.model_dump())
+        db.add(new_lista)
+        db.commit()
+        db.refresh(new_lista)
+        return new_lista
+    except IntegrityError:
+        db.rollback()
+        raise HTTPException(status_code=409,
+                            detail=f"candidato with problems, change information!")
 
 @router.get("/{id}", response_model=schemas.CandidatoCreate)
 def get_a_candidate(id: int,

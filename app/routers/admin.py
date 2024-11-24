@@ -45,7 +45,8 @@ def create_admin(admin: schemas.PersonaCreate, db: Session = Depends(get_db)):
     return persona
 @router.get("/",
            response_model=List[schemas.PersonaOut])
-def get_admins(db: Session = Depends(get_db)):
+def get_admins(db: Session = Depends(get_db)
+               , current_admin: schemas.TokenData=Depends(oauth2.get_current_admin)):
     personas = (db.query(models.Administrador.id.label("id"),
                         models.Persona.nombres,
                         models.Persona.apellido_paterno,

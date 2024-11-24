@@ -6,6 +6,7 @@ from app.database import get_db
 from typing import List
 
 from app import schemas, models, oauth2
+from sqlalchemy.exc import IntegrityError
 
 router = APIRouter(prefix="/eleccion",
                    tags=["eleccion"])
@@ -18,10 +19,15 @@ def get_elections(db: Session = Depends(get_db)):
 def create_election(election: schemas.EleccionCreate, db: Session = Depends(get_db), 
                     current_user: schemas.TokenData = Depends(oauth2.get_current_admin)):
     new_election = models.Eleccion(**election.model_dump())
-    db.add(new_election)
-    db.commit()
-    db.refresh(new_election)
-    return new_election
+    try:
+        db.add(new_election)
+        db.commit()
+        db.refresh(new_election)
+        return new_election
+    except IntegrityError:
+        db.rollback()
+        raise HTTPException(status_code=status.HTTP_400_CONFLICT,
+                            detail="election already exists")
 
 @router.get("/{id}", response_model=schemas.EleccionOut)
 def get_election(id: int, db: Session = Depends(get_db),

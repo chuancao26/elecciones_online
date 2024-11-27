@@ -45,7 +45,8 @@ def create_admin(admin: schemas.PersonaCreate, db: Session = Depends(get_db)):
     return persona
 @router.get("/",
            response_model=List[schemas.PersonaOut])
-def get_admins(db: Session = Depends(get_db)):
+def get_admins(db: Session = Depends(get_db)
+               , current_admin: schemas.TokenData=Depends(oauth2.get_current_admin)):
     personas = (db.query(models.Administrador.id.label("id"),
                         models.Persona.nombres,
                         models.Persona.apellido_paterno,
@@ -59,7 +60,9 @@ def update_admin(id: int, new_admin: schemas.PersonaCreate,
                  info_admin: schemas.TokenData=Depends(oauth2.get_current_admin)):
     current_admin = db.query(models.Administrador).filter(models.Administrador.id == id)
     if current_admin is None:
-        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND, detail=f"admin with id {id} not found")
-    current_admin.update(new_admin.model_dump(), synchronize_session=False)
+        raise HTTPException(status_code=status.HTTP_404_NOT_FOUND,
+                            detail=f"admin with id {id} not found")
+    current_admin.update(new_admin.model_dump(),
+                         synchronize_session=False)
     db.commit()
     return current_admin.first()

@@ -50,6 +50,7 @@ def get_current_elector(token: str = Depends(oauth2), db: Session = Depends(data
         headers={"WWW-Authenticate": "Bearer"}
     )
     token = verify_access_token(token, credentials_exception)
+    print(token.type_user)
     if token.type_user != "elector":
         raise credentials_exception
     return token

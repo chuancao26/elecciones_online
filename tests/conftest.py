@@ -155,3 +155,64 @@ def create_candidates(session, create_listas):
     session.add_all(candidates_list)
     session.commit()
     return session.query(models.Candidato).all()
+@pytest.fixture
+def create_elector(client):
+    data = {
+        "nombres": "Juan Carlos",
+        "apellido_paterno": "Gómez",
+        "apellido_materno": "Martínez",
+        "usuario": "elector1",
+        "password": "123"
+    }
+    res = client.post("/elector", json=data)
+    assert res.status_code == 201
+    new_elector = res.json()
+    new_elector["password"] = data["password"]
+    return new_elector
+@pytest.fixture
+def create_group_electors(client):
+    list_electors = [
+        {
+            "nombres": "Juan Carlos",
+            "apellido_paterno": "Gómez",
+            "apellido_materno": "Martínez",
+            "usuario": "elector2",
+            "password": "123"
+        },
+        {
+            "nombres": "Juan Carlos",
+            "apellido_paterno": "Gómez",
+            "apellido_materno": "Martínez",
+            "usuario": "elector3",
+            "password": "123"
+        },
+        {
+            "nombres": "Juan Carlos",
+            "apellido_paterno": "Gómez",
+            "apellido_materno": "Martínez",
+            "usuario": "elector4",
+            "password": "123"
+        },
+        {
+            "nombres": "Juan Carlos",
+            "apellido_paterno": "Gómez",
+            "apellido_materno": "Martínez",
+            "usuario": "elector5",
+            "password": "123"
+        },
+        {
+            "nombres": "Juan Carlos",
+            "apellido_paterno": "Gómez",
+            "apellido_materno": "Martínez",
+            "usuario": "elector6",
+            "password": "2638"
+        },
+    ]
+    electors_info = []
+    for data in list_electors:
+        res = client.post("/elector", json=data)
+        assert res.status_code == 201
+    new_elector = res.json()
+    new_elector["password"] = data["password"]
+    return new_elector
+

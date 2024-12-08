@@ -33,25 +33,33 @@ def test_update_elector(authorized_elector_client):
     assert response_persona.nombres == new_data['nombres']
     assert response_persona.apellido_paterno == new_data['apellido_paterno']
     assert response_persona.apellido_materno == new_data['apellido_materno']
-#def test_update_elector(create_elector, client):
-#    data = {
-#        "username": create_elector['usuario'],
-#        "password": create_elector['password']
-#    }
-#    res = client.post("/login", data=data)
-#    token = schemas.TokenCreated(**res.json())
-#    client.headers = {
-#        **client.headers,
-#        "Authorization": f"Bearer {token.access_token}"
-#    }
-#    new_data = {
-#           "nombres": "New Name",
-#           "apellido_paterno": "New First Name",
-#           "apellido_materno": "New Second Name",
-#       }
-#    res = client.put('/elector', json=new_data)
-#    response_persona = schemas.PersonaOut(**res.json())
-#    assert res.status_code == 200
-#    assert response_persona.nombres == new_data['nombres']
-#    assert response_persona.apellido_paterno == new_data['apellido_paterno']
-#    assert response_persona.apellido_materno == new_data['apellido_materno']
+def test_get_non_existent_elector(authorized_admin_client):
+    res = authorized_admin_client.get('/elector/222')
+    assert res.status_code == 404
+def test_get_unauthorized_elector(authorized_elector_client):
+    res = authorized_elector_client.get('/elector/222')
+    assert res.status_code == 401
+def test_create_elector(client, authorized_admin_client):
+    data = {
+        "nombres": "NewName",
+        "apellido_paterno": "NewFirstName",
+        "apellido_materno": "NewSecondName",
+        "usuario": "testingElector1",
+        "password": "123"
+    }
+    res = client.post('/elector', json=data)
+    elector = schemas.PersonaOut(**res.json())
+    assert res.status_code == 201
+    assert elector.nombres == data['nombres']
+    assert elector.apellido_paterno == data['apellido_paterno']
+    assert elector.apellido_materno == data['apellido_materno']
+def test_duplicated_elector(create_elector, client):
+    data = {
+        "nombres": "Juan Carlos",
+        "apellido_paterno": "Gómez",
+        "apellido_materno": "Martínez",
+        "usuario": "elector1",
+        "password": "123"
+    }
+    res = client.post('/elector', json=data)
+    assert res.status_code == 400

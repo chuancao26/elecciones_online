@@ -84,9 +84,10 @@ def update_elector(new_elector: schemas.PersonaUpdate,
         .filter(models.Elector.id == current_user.id)
         .first()
     )
+
     current_person = (
         db.query(models.Persona)
-        .filter(models.Persona.id == elector["id_persona"])
+        .filter(models.Persona.id == elector[0])
     )
     current_person.update(new_elector.model_dump(), synchronize_session=False)
     db.commit()

@@ -17,7 +17,7 @@ def get_lists(db: Session = Depends(get_db)):
     lists = db.query(models.Lista).all()
     return lists
 
-@router.get("/{id}", response_model=List[schemas.ListaOut])
+@router.get("/{id}", response_model=schemas.ListaOut)
 def get_lists(id: int,
               db: Session = Depends(get_db),
               current_admin: schemas.TokenData=Depends(oauth2.get_current_admin)):

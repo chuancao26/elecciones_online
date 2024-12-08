@@ -10,6 +10,8 @@ from app.config import settings
 
 from datetime import datetime, timedelta
 
+CREDENTIALS_ERROR_MESSAGE = "Could not validate credentials"
+
 oauth2 = OAuth2PasswordBearer(tokenUrl="login")
 
 SECRET_KEY = settings.secret_key
@@ -38,7 +40,7 @@ def verify_access_token(token: str,  credentials_exception):
 def get_current_general(token: str=Depends(oauth2), db: Session=Depends(database.get_db)):
     credentials_exception = HTTPException(
         status_code=401,
-        detail="Could not validate credentials",
+        detail=CREDENTIALS_ERROR_MESSAGE,
         headers={"WWW-Authenticate": "Bearer"}
     )
     token = verify_access_token(token, credentials_exception)
@@ -46,7 +48,7 @@ def get_current_general(token: str=Depends(oauth2), db: Session=Depends(database
 def get_current_elector(token: str = Depends(oauth2), db: Session = Depends(database.get_db)):
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="Could not validate credentials",
+        detail=CREDENTIALS_ERROR_MESSAGE,
         headers={"WWW-Authenticate": "Bearer"}
     )
     token = verify_access_token(token, credentials_exception)
@@ -57,7 +59,7 @@ def get_current_elector(token: str = Depends(oauth2), db: Session = Depends(data
 def get_current_admin(token: str = Depends(oauth2), db: Session = Depends(database.get_db)):
     credentials_exception = HTTPException(
         status_code=status.HTTP_401_UNAUTHORIZED,
-        detail="Could not validate credentials",
+        detail=CREDENTIALS_ERROR_MESSAGE,
         headers={"WWW-Authenticate": "Bearer"}
     )
     token = verify_access_token(token, credentials_exception)

@@ -80,13 +80,14 @@ def update_elector(new_elector: schemas.PersonaUpdate,
                    db: Session = Depends(get_db),
                    current_user: schemas.TokenData = Depends(oauth2.get_current_elector)):
     elector = (
-        db.query(models.Elector.id_persona.label("id"))
-        .join(models.Elector, models.Elector.id_persona == models.Persona.id)
+        db.query(models.Elector.id_persona)
         .filter(models.Elector.id == current_user.id)
+        .first()
     )
+
     current_person = (
         db.query(models.Persona)
-        .filter(models.Persona.id == str(elector["id"]))
+        .filter(models.Persona.id == elector[0])
     )
     current_person.update(new_elector.model_dump(), synchronize_session=False)
     db.commit()

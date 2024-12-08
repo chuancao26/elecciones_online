@@ -5,3 +5,5 @@ venv/
 __pycache__
 app/__pycache__/*
 venv2
+sonar-project.properties
+.scannerwork/

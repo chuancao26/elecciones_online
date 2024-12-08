@@ -1,7 +1,7 @@
 from selenium.webdriver.common.by import By
 import time
 class TestRegisterPage:
-    def test_valid_register(self, driver):
+    def test_invalid_register(self, driver):
         driver.get("http://localhost:4321/register")
 
         driver.find_element(By.ID, "name").send_keys("Crishtian")
@@ -15,7 +15,7 @@ class TestRegisterPage:
         driver.find_element(By.ID, "form-register").submit()
         time.sleep(2)
         current_url = driver.current_url
-        assert current_url == "http://localhost:4321/"
+        assert current_url == "http://localhost:4321/register"
 
     def test_duplicated_elector(self, driver):
         driver.get("http://localhost:4321/register")

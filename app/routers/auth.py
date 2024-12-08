@@ -38,7 +38,6 @@ def login(user_credentials: OAuth2PasswordRequestForm = Depends(),
     elif user_admin and not user_elector:
         if not utils.verify_password(user_credentials.password, user_admin.password):
             raise HTTPException(status_code=404, detail="Invalid Credentials")
-        print("admin created")
         access_token = oauth2.create_access_token(data={"id": user_admin.id, "type_user": "admin"})
         return {"access_token": access_token, "token_type": "bearer"}
     else:
@@ -78,7 +77,6 @@ def get_current_user(token: str, db: Session = Depends(get_db)):
            .filter(models.Administrador.id == token.id)
            .first()
         )
-        print(token.id)
         admin= schemas.PersonaOut(id=admin.id,
                                   nombres=admin.nombres,
                                   apellido_paterno=admin.apellido_paterno,

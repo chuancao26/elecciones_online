@@ -167,6 +167,7 @@ def create_elector(client):
     res = client.post("/elector", json=data)
     assert res.status_code == 201
     new_elector = res.json()
+    new_elector["usuario"] = data['usuario']
     new_elector["password"] = data["password"]
     return new_elector
 @pytest.fixture
@@ -212,7 +213,7 @@ def create_group_electors(client):
     for data in list_electors:
         res = client.post("/elector", json=data)
         assert res.status_code == 201
-    new_elector = res.json()
-    new_elector["password"] = data["password"]
-    return new_elector
-
+        new_elector = res.json()
+        new_elector["password"] = data["password"]
+        electors_info.append(new_elector)
+    return electors_info

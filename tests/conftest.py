@@ -1,19 +1,19 @@
-from fastapi.testclient import TestClient
 import pytest
+from fastapi.testclient import TestClient
+from sqlalchemy import create_engine
+from sqlalchemy.orm import sessionmaker
+from selenium import webdriver
+from webdriver_manager.chrome import ChromeDriverManager
+from selenium.webdriver.chrome.service import Service as ChromeService
+
+from app import models
 from app.main import app
 from app.config import settings
 
-from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
 
 from app.database import get_db, Base
 from app.oauth2 import create_access_token
 
-from app import models
-from selenium import webdriver
-
-from webdriver_manager.chrome import ChromeDriverManager
-from selenium.webdriver.chrome.service import Service as ChromeService
 
 SQLALCHEMY_DATABASE_URL = f"postgresql://{settings.database_username}:{settings.database_password}@{settings.database_hostname}/{settings.database_name}_test"
 
@@ -21,6 +21,7 @@ engine = create_engine(SQLALCHEMY_DATABASE_URL)
 TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
 Base.metadata.create_all(bind=engine)
+
 @pytest.fixture
 def session():
     Base.metadata.drop_all(bind=engine)
@@ -30,6 +31,7 @@ def session():
         yield db
     finally:
         db.close()
+        
 @pytest.fixture
 def client(session):
     def override_get_db():
@@ -60,6 +62,7 @@ def test_elector(client):
     new_user = res.json()
     new_user["password"] = data["password"]
     return new_user
+
 @pytest.fixture
 def test_admin(client):
     data = {"nombres": "admin_1",
@@ -72,12 +75,15 @@ def test_admin(client):
     new_user = res.json()
     new_user["password"] = data["password"]
     return new_user
+
 @pytest.fixture
 def token_elector(test_elector):
     return create_access_token(data={"id": test_elector["id"], "type_user": "elector"})
+
 @pytest.fixture
 def token_admin(test_admin):
     return create_access_token(data={"id": test_admin["id"], "type_user": "admin"})
+
 @pytest.fixture
 def authorized_elector_client(client, token_elector):
     client.headers = {
@@ -85,6 +91,7 @@ def authorized_elector_client(client, token_elector):
         "Authorization" : f"Bearer {token_elector}"
     }
     return client
+
 @pytest.fixture
 def authorized_admin_client(client, token_admin):
     client.headers = {
@@ -140,6 +147,7 @@ def create_listas(create_elections, session):
     session.commit()
     listas = session.query(models.Lista).all()
     return listas
+
 @pytest.fixture
 def create_candidates(session, create_listas):
     data = [

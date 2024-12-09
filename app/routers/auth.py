@@ -40,7 +40,7 @@ def login(user_credentials: OAuth2PasswordRequestForm = Depends(),
         return {"access_token": access_token, "token_type": "bearer"}
     elif user_admin and not user_elector:
         if not utils.verify_password(user_credentials.password, user_admin.password):
-            raise HTTPException(status_code=404, detail="Invalid Credentials")
+            raise HTTPException(status_code=404, detail=INVALID_CREDENTIALS)
         access_token = oauth2.create_access_token(data={"id": user_admin.id, "type_user": "admin"})
         return {"access_token": access_token, "token_type": "bearer"}
     else:

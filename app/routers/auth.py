@@ -12,6 +12,9 @@ router = APIRouter(
     prefix="/login",
     tags=["Login"],
 )
+
+INVALID_CREDENTIALS="Invalid Credentials"
+
 @router.post("/", response_model=schemas.TokenCreated)
 def login(user_credentials: OAuth2PasswordRequestForm = Depends(),
           db: Session = Depends(get_db)):
@@ -28,16 +31,16 @@ def login(user_credentials: OAuth2PasswordRequestForm = Depends(),
         .first()
     )
     if not user_elector and not user_admin:
-        raise HTTPException(status_code=404, detail="Invalid Credentials")
+        raise HTTPException(status_code=404, detail=INVALID_CREDENTIALS)
     elif user_elector and not user_admin:
         if not utils.verify_password(user_credentials.password, user_elector.password):
-            raise HTTPException(status_code=404, detail="Invalid Credentials")
+            raise HTTPException(status_code=404, detail=INVALID_CREDENTIALS)
         access_token = oauth2.create_access_token(data={"id": user_elector.id, "type_user": "elector"})
 
         return {"access_token": access_token, "token_type": "bearer"}
     elif user_admin and not user_elector:
         if not utils.verify_password(user_credentials.password, user_admin.password):
-            raise HTTPException(status_code=404, detail="Invalid Credentials")
+            raise HTTPException(status_code=404, detail=INVALID_CREDENTIALS)
         access_token = oauth2.create_access_token(data={"id": user_admin.id, "type_user": "admin"})
         return {"access_token": access_token, "token_type": "bearer"}
     else:
@@ -83,4 +86,3 @@ def get_current_user(token: str, db: Session = Depends(get_db)):
                                   apellido_materno=admin.apellido_materno)
         current_user_data = schemas.CurrentUserData(persona=admin, type_user=token.type_user)
         return current_user_data
-

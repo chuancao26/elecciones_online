@@ -30,7 +30,6 @@ def verify_access_token(token: str,  credentials_exception):
         payload = jwt.decode(token, SECRET_KEY, algorithms=[ALGORITHM])
         id_obtained = payload.get("id")
         type_user_obtained = payload.get("type_user")
-        print(f"verify id = {id_obtained}, type_user = {type_user_obtained}")
         if id_obtained is None:
             raise credentials_exception
         token_data = schemas.TokenData(id=id_obtained, type_user=type_user_obtained)
@@ -52,7 +51,6 @@ def get_current_elector(token: str = Depends(oauth2), db: Session = Depends(data
         headers={"WWW-Authenticate": "Bearer"}
     )
     token = verify_access_token(token, credentials_exception)
-    print(token.type_user)
     if token.type_user != "elector":
         raise credentials_exception
     return token

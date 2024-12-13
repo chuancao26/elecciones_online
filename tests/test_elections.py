@@ -1,6 +1,5 @@
-from venv import create
-
 from app.models import Eleccion
+from app.schemas import EleccionOut
 
 def test_get_elections(create_elections, client):
     response = client.get("/eleccion/")
@@ -8,10 +7,13 @@ def test_get_elections(create_elections, client):
     assert len(create_elections) == len(response.json())
 
 def test_get_an_election(authorized_admin_client, create_elections):
-    response = authorized_admin_client.get(f"/eleccion/{1}")
+    response = authorized_admin_client.get(f"/eleccion/{create_elections[0].id}")
+    election = EleccionOut(**response.json())
     assert response.status_code == 200
+    assert election.id == create_elections[0].id
+    assert election.descripcion == create_elections[0].descripcion
 
-def test_delete_election(authorized_admin_client, create_elections):
+def test_delete_a_election(authorized_admin_client, create_elections):
     eleccion_id = create_elections[0].id
     assert authorized_admin_client.delete(f"/eleccion/{eleccion_id}").status_code == 204
 

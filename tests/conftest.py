@@ -13,7 +13,7 @@ from app.config import settings
 
 from app.database import get_db, Base
 from app.oauth2 import create_access_token
-
+from app.config import settings
 
 SQLALCHEMY_DATABASE_URL = f"postgresql://{settings.database_username}:{settings.database_password}@{settings.database_hostname}/{settings.database_name}_test"
 
@@ -56,7 +56,7 @@ def test_elector(client):
             "apellido_paterno": "prueba2",
             "apellido_materno": "prueba3",
             "usuario": "user1",
-            "password": "123"}
+            "password": settings.general_password}
     res = client.post("/elector/", json=data)
     assert res.status_code == 201
     new_user = res.json()
@@ -69,7 +69,7 @@ def test_admin(client):
             "apellido_paterno": "admin_2",
             "apellido_materno": "admin_3",
             "usuario": "admin1",
-            "password": "123"}
+            "password": settings.general_password}
     res = client.post("/admin/", json=data)
     assert res.status_code == 201
     new_user = res.json()
@@ -170,7 +170,7 @@ def create_elector(client):
         "apellido_paterno": "Gómez",
         "apellido_materno": "Martínez",
         "usuario": "elector1",
-        "password": "123"
+        "password": settings.general_password
     }
     res = client.post("/elector", json=data)
     assert res.status_code == 201
@@ -186,35 +186,35 @@ def create_group_electors(client):
             "apellido_paterno": "Gómez",
             "apellido_materno": "Martínez",
             "usuario": "elector2",
-            "password": "123"
+            "password": settings.general_password
         },
         {
             "nombres": "Juan Carlos",
             "apellido_paterno": "Gómez",
             "apellido_materno": "Martínez",
             "usuario": "elector3",
-            "password": "123"
+            "password": settings.general_password
         },
         {
             "nombres": "Juan Carlos",
             "apellido_paterno": "Gómez",
             "apellido_materno": "Martínez",
             "usuario": "elector4",
-            "password": "123"
+            "password": settings.general_password
         },
         {
             "nombres": "Juan Carlos",
             "apellido_paterno": "Gómez",
             "apellido_materno": "Martínez",
             "usuario": "elector5",
-            "password": "123"
+            "password": settings.general_password
         },
         {
             "nombres": "Juan Carlos",
             "apellido_paterno": "Gómez",
             "apellido_materno": "Martínez",
             "usuario": "elector6",
-            "password": "2638"
+            "password": settings.general_password
         },
     ]
     electors_info = []

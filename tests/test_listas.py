@@ -33,7 +33,6 @@ def test_create_list(authorized_admin_client, create_elections):
 def test_delete_list(authorized_admin_client, create_listas):
     res = authorized_admin_client.delete('/lista/1')
     assert res.status_code == 204  
-    
     res = authorized_admin_client.get('/lista/1')
     assert res.status_code == 404
 

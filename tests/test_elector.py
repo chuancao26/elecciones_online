@@ -1,4 +1,5 @@
 from app import schemas
+from app.config import settings
 
 def validate_data(elector):
     return schemas.PersonaOut(**elector)
@@ -45,7 +46,7 @@ def test_create_elector(client, authorized_admin_client):
         "apellido_paterno": "NewFirstName",
         "apellido_materno": "NewSecondName",
         "usuario": "testingElector1",
-        "password": "123"
+        "password": settings.general_password
     }
     res = client.post('/elector', json=data)
     elector = schemas.PersonaOut(**res.json())
@@ -59,7 +60,7 @@ def test_duplicated_elector(create_elector, client):
         "apellido_paterno": "Gómez",
         "apellido_materno": "Martínez",
         "usuario": "elector1",
-        "password": "123"
+        "password": settings.general_password
     }
     res = client.post('/elector', json=data)
     assert res.status_code == 400

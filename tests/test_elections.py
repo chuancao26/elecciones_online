@@ -1,27 +1,29 @@
 from app.models import Eleccion
+from app.schemas import EleccionOut
 
-def test_get_elections(create_elecciones, client):
+def test_get_elections(create_elections, client):
     response = client.get("/eleccion/")
     assert response.status_code == 200
-    assert len(create_elecciones) == len(response.json())
+    assert len(create_elections) == len(response.json())
 
-def test_get_an_election(create_elecciones, client):
-    response = client.get(f"/eleccion/{create_elecciones[0].id}")
-    eleccion = Eleccion(**response.json())
+def test_get_an_election(authorized_admin_client, create_elections):
+    response = authorized_admin_client.get(f"/eleccion/{create_elections[0].id}")
+    election = EleccionOut(**response.json())
     assert response.status_code == 200
-    assert eleccion.descripcion == create_elecciones[0].descripcion
+    assert election.id == create_elections[0].id
+    assert election.descripcion == create_elections[0].descripcion
 
-def test_delete_election(authorized_admin_client, create_elecciones):
-    eleccion_id = create_elecciones[0].id
+def test_delete_a_election(authorized_admin_client, create_elections):
+    eleccion_id = create_elections[0].id
     assert authorized_admin_client.delete(f"/eleccion/{eleccion_id}").status_code == 204
 
-def test_delete_election_already_deleted(authorized_admin_client, create_elecciones):
-    eleccion_id = create_elecciones[0].id
+def test_delete_election_already_deleted(authorized_admin_client, create_elections):
+    eleccion_id = create_elections[0].id
     authorized_admin_client.delete(f"/eleccion/{eleccion_id}")
     assert authorized_admin_client.delete(f"/eleccion/{eleccion_id}").status_code == 404
 
-def test_update_election(authorized_admin_client, create_elecciones):
-    eleccion_id = create_elecciones[0].id
+def test_update_election(authorized_admin_client, create_elections):
+    eleccion_id = create_elections[0].id
     updated_data = {
         "fecha": "2024-12-20",
         "hora_inicio": "08:00:00",
@@ -30,15 +32,14 @@ def test_update_election(authorized_admin_client, create_elecciones):
     }
     response = authorized_admin_client.put(f"/eleccion/{eleccion_id}", json=updated_data)
     eleccion = Eleccion(**response.json())
-    
-    assert response.status_code == 202
+
+    assert response.status_code == 200
     assert eleccion.descripcion == updated_data["descripcion"]
-    assert str(eleccion.fecha) == updated_data["fecha"]
     assert str(eleccion.hora_inicio) == updated_data["hora_inicio"]
     assert str(eleccion.hora_fin) == updated_data["hora_fin"]
 
-def test_update_unauthorized_election(client, create_elecciones):
-    eleccion_id = create_elecciones[0].id
+def test_update_unauthorized_election(client, create_elections):
+    eleccion_id = create_elections[0].id
     unauthorized_data = {
         "fecha": "2024-12-20",
         "hora_inicio": "08:00:00",

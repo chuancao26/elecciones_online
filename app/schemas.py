@@ -10,6 +10,7 @@ class EleccionCreate(BaseModel):
 
 class EleccionOut(EleccionCreate):
     id: int
+    descripcion: str
 
 class ListaCreate(BaseModel):
     nombre: str

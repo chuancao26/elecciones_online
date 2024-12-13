@@ -48,5 +48,4 @@ def delete_list(id: int, db: Session = Depends(get_db),
         raise HTTPException(status_code=404, detail=f"Lista with id: {id} not found")
     lista.delete(synchronize_session=False)
     db.commit()
-    db.refresh(lista)
     return HTTPException(status_code=status.HTTP_204_NO_CONTENT)

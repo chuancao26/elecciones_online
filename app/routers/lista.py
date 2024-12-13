@@ -21,10 +21,10 @@ def get_lists(db: Session = Depends(get_db)):
 def get_lists(id: int,
               db: Session = Depends(get_db),
               current_admin: schemas.TokenData=Depends(oauth2.get_current_admin)):
-    list = db.query(models.Lista).filter(models.Lista.id == id).first()
-    if list is None:
+    lista = db.query(models.Lista).filter(models.Lista.id == id).first()
+    if lista is None:
         raise HTTPException(status_code=404, detail=f"Lista with id: {id} not found")
-    return list
+    return lista
     
 @router.post("/", status_code=status.HTTP_201_CREATED, response_model=schemas.ListaOut)
 def create_list(list: schemas.ListaCreate, db: Session = Depends(get_db),
@@ -43,9 +43,9 @@ def create_list(list: schemas.ListaCreate, db: Session = Depends(get_db),
 @router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_list(id: int, db: Session = Depends(get_db),
               current_admin: schemas.TokenData=Depends(oauth2.get_current_admin)):
-    list = db.query(models.Lista).filter(models.Lista.id == id)
+    lista = db.query(models.Lista).filter(models.Lista.id == id)
     if list.first() is None:
         raise HTTPException(status_code=404, detail=f"Lista with id: {id} not found")
-    list.delete(synchronize_session=False)
+    lista.delete(synchronize_session=False)
     db.commit()
     return HTTPException(status_code=status.HTTP_204_NO_CONTENT)

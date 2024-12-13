@@ -106,15 +106,15 @@ def create_elections(session):
             "hora_inicio": "08:00:00",
             "hora_fin": "01:00:00",
             "descripcion": "Eleccion de prueba 1"},
-            {"fecha": "2024-12-01 00:00:00+00",
+            {"fecha": "2024-11-01 00:00:00+00",
              "hora_inicio": "11:00:00",
              "hora_fin": "15:00:00",
              "descripcion": "Eleccion de prueba 2"},
-            {"fecha": "2024-12-01 00:00:00+00",
+            {"fecha": "2024-10-01 00:00:00+00",
              "hora_inicio": "16:00:00",
              "hora_fin": "19:00:00",
              "descripcion": "Eleccion de prueba 3"},
-            {"fecha": "2024-12-01 00:00:00+00",
+            {"fecha": "2024-09-01 00:00:00+00",
              "hora_inicio": "08:00:00",
              "hora_fin": "01:00:00",
              "descripcion": "Eleccion de prueba 4"}
@@ -130,15 +130,17 @@ def create_elections(session):
 
 @pytest.fixture
 def create_listas(create_elections, session):
+    nombre1 = "Lista 1"
+    nombre2 = "Lista 2"
     data = [
-        {"nombre": "Lista 1", "id_eleccion": 1, "propuesta": "Propuesta 1"},
-        {"nombre": "Lista 2", "id_eleccion": 1, "propuesta": "Propuesta 2"},
-        {"nombre": "Lista 1", "id_eleccion": 2, "propuesta": "Propuesta 3"},
-        {"nombre": "Lista 2", "id_eleccion": 2, "propuesta": "Propuesta 4"},
-        {"nombre": "Lista 1", "id_eleccion": 3, "propuesta": "Propuesta 5"},
-        {"nombre": "Lista 2", "id_eleccion": 3, "propuesta": "Propuesta 6"},
-        {"nombre": "Lista 1", "id_eleccion": 4, "propuesta": "Propuesta 7"},
-        {"nombre": "Lista 2", "id_eleccion": 4, "propuesta": "Propuesta 8"}
+        {"nombre": nombre1, "id_eleccion": 1, "propuesta": "Propuesta 1"},
+        {"nombre": nombre2, "id_eleccion": 1, "propuesta": "Propuesta 2"},
+        {"nombre": nombre1, "id_eleccion": 2, "propuesta": "Propuesta 3"},
+        {"nombre": nombre2, "id_eleccion": 2, "propuesta": "Propuesta 4"},
+        {"nombre": nombre1, "id_eleccion": 3, "propuesta": "Propuesta 5"},
+        {"nombre": nombre2, "id_eleccion": 3, "propuesta": "Propuesta 6"},
+        {"nombre": nombre1, "id_eleccion": 4, "propuesta": "Propuesta 7"},
+        {"nombre": nombre2, "id_eleccion": 4, "propuesta": "Propuesta 8"}
     ]
     def make_list(list):
         return models.Lista(**list)

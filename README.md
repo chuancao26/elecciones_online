@@ -9,7 +9,6 @@
 - Jazmin Gabriela Perez Villasante  
 - Cristhian David Huanca Olazabal  
 - Sebastian Andres Mendoza Fernandez  
-- Edilson Bonet Mamani Yucra  
 
 ---
 
@@ -19,8 +18,8 @@ El propósito de este proyecto es desarrollar una aplicación web de votaciones 
 
 ### Funcionalidades
 
-- **Interfaz gráfica de usuario**: Utilizando cualquier lenguaje, biblioteca o framework.  
-- **Persistencia en bases de datos**: Soporte para MySQL, SQLite, MongoDB u otro sistema de bases de datos.  
+- **Interfaz gráfica de usuario**
+- **Persistencia en bases de datos**
 
 ### Objetivos
 
@@ -40,8 +39,8 @@ El propósito de este proyecto es desarrollar una aplicación web de votaciones 
 
 ### Planificación de Tareas
 
-La planificación de tareas de implementación se gestiona usando la herramienta Trello. Puedes ver el tablero con todas las tareas del proyecto en el siguiente enlace:  
-[Sistema de Elecciones - Trello](https://trello.com/b/dr4vfErF/sistema-de-elecciones)  
+La planificación de tareas de implementación se gestiona usando la herramienta Projects de Github. Puedes ver el tablero con todas las tareas del proyecto en el siguiente enlace:  
+[Sistema de Elecciones - Projects](https://github.com/users/chuancao26/projects/4)  
 
 ### Documentación
 
@@ -49,6 +48,28 @@ La planificación de tareas de implementación se gestiona usando la herramienta
 - **Documento de arquitectura de software actualizado:** [Arquitectura](https://docs.google.com/document/d/1cbHVusBtsyzv-eA0EU2F89KYerfHQLAP/edit?usp=sharing&ouid=103974025895514464791&rtpof=true&sd=true)  
 
 ---
+
+## Tecnologías
+
+### Backend
+- **Lenguaje de Programación**: Python 3.10.10
+- **Framework**: [FastAPI](https://fastapi.tiangolo.com/)
+- **Migraciones de Base de Datos**: [Alembic](https://alembic.sqlalchemy.org/)
+- **Base de Datos**: PostgreSQL
+- **Gestor de Paquetes**: [Poetry](https://python-poetry.org/)
+
+### Frontend
+- **Framework**: [Astro](https://astro.build/)
+- **Estilos CSS**: [TailwindCSS](https://tailwindcss.com/)
+- **Gestor de Paquetes**: [Bun](https://bun.sh/)
+
+## Herramientas de Construcción y Pruebas
+
+- **Construcción del Backend**: Poetry facilita la gestión de dependencias y scripts personalizados para la construcción.
+- **Construcción del Frontend**: Bun proporciona herramientas rápidas para la instalación de paquetes y scripts de construcción.
+- **Pruebas del Backend**: Se recomienda usar `pytest` para escribir y ejecutar pruebas unitarias y de integración.
+- **Pruebas del Frontend**: Astro incluye capacidades de pruebas y se pueden extender con bibliotecas como `vitest` o `jest`.
+
 
 ## Pipeline de Jenkins
 

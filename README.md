@@ -73,39 +73,201 @@ La planificación de tareas de implementación se gestiona usando la herramienta
 
 ## Pipeline de Jenkins
 
-### Descripción General
+El proyecto incluye un pipeline de CI/CD configurado para automatizar tareas clave en el desarrollo y despliegue. El pipeline está definido de la siguiente manera:
 
-El pipeline de Jenkins está diseñado para automatizar la configuración y despliegue del proyecto. Incluye pasos para la instalación de dependencias, configuración de entornos, ejecución de análisis estáticos, migración de bases de datos y pruebas.
+### Stages del Pipeline
 
-### Etapas del Pipeline
+1. **Checkout del Código**: Se clona el repositorio del backend y del frontend desde GitHub.
 
-1. **Checkout del Código**
-   - Se clonan los repositorios de GitHub para el backend y el frontend.
+2. **Configuración del Entorno**:
+   - Creación y activación de un entorno virtual con Python.
 
-2. **Configuración del Entorno Virtual**
-   - Se crea y activa un entorno virtual de Python para manejar las dependencias del backend.
+3. **Instalación de Dependencias con Poetry**:
+   - Instalación del gestor de dependencias Poetry.
+   - Instalación de las dependencias definidas en `pyproject.toml`.
 
-3. **Instalación con Poetry**
-   - Poetry se utiliza para instalar las dependencias definidas en `pyproject.toml`.
+4. **Migraciones de Base de Datos**:
+   - Ejecución de migraciones de base de datos utilizando Alembic para asegurar que la base de datos esté actualizada.
 
-4. **Migraciones de Base de Datos**
-   - Alembic aplica migraciones para sincronizar el esquema de la base de datos.
+5. **Ejecución de Pruebas con Pytest**:
+   - Ejecución de pruebas unitarias y generación de un reporte de cobertura de código.
 
-5. **Análisis de Código con SonarQube**
-   - Se realiza un análisis estático del código usando SonarQube.
+6. **Análisis de Calidad de Código con SonarQube**:
+   - Configuración y ejecución del análisis estático del código para detectar errores y medir calidad.
 
-6. **Inicio del Servidor Backend**
-   - El servidor FastAPI se lanza localmente.
+7. **Inicio del Servidor FastAPI**:
+   - Inicia el servidor de desarrollo del backend con Uvicorn en segundo plano.
 
-7. **Instalación de Dependencias del Frontend**
-   - Bun se utiliza para instalar las dependencias del frontend.
+8. **Preparación del Frontend**:
+   - Clonación del repositorio del frontend y ejecución del comando `bun install` para instalar dependencias.
 
-8. **Lanzamiento del Servidor Frontend**
-   - Se inicia el servidor de desarrollo para el frontend.
+9. **Lanzamiento del Servidor Frontend**:
+   - Inicia el servidor de desarrollo del frontend en segundo plano con `bun dev`.
 
-9. **Pruebas Automatizadas**
-   - Se ejecutan pruebas unitarias con Pytest.
-   - Se realizan pruebas de rendimiento con JMeter.
+10. **Pruebas de Rendimiento con JMeter**:
+    - Ejecución de pruebas de rendimiento utilizando JMeter y generación de reportes.
+
+11. **Publicación del Reporte de JMeter**:
+    - Publicación de los resultados de las pruebas de rendimiento en el pipeline.
+
+12. **Verificación de Vulnerabilidades con OWASP Dependency-Check**:
+    - Análisis de las dependencias del proyecto para identificar vulnerabilidades de seguridad conocidas.
+
+### Definición del Pipeline
+
+```groovy
+pipeline {
+    agent any
+
+    environment {
+        SCANNER_HOME = tool 'sonnar-scanner'
+    }
+
+    stages {
+        stage('checkout') {
+            steps {
+                checkout scmGit(branches: [[name: 'desarrollo_API']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/chuancao26/elecciones_online']])
+            }
+        }
+
+        stage('entorno') {
+            steps {
+                bat '''
+                REM Crear el entorno virtual
+                python -m venv venv
+
+                REM Activar el entorno virtual
+                venv\\Scripts\\activate
+                '''
+            }
+        }
+
+        stage('Poetry') {
+            steps {
+                bat '''
+                REM Activar el entorno virtual
+                call venv\\Scripts\\activate
+
+                REM Instalar poetry
+                pip install poetry
+
+                REM Instalar las dependencias definidas en pyproject.toml
+                poetry install
+                '''
+            }
+        }
+
+        stage('alembic') {
+            steps {
+                bat '''
+                REM Activar el entorno virtual
+                call venv\\Scripts\\activate
+
+                REM Migrar la base de datos a la versión más reciente
+                alembic upgrade head
+                '''
+            }
+        }
+
+        stage('pytest') {
+            steps {
+                git branch: 'desarrollo_API', url: 'https://github.com/chuancao26/elecciones_online'
+                bat '''
+                REM Activar el entorno virtual
+                call venv\\Scripts\\activate
+
+                REM Ejecutar pytest en el archivo de prueba
+                coverage run -m pytest
+                coverage xml
+                '''
+            }
+        }
+
+        stage("SonarQube Analysis") {
+            steps {
+                bat """
+                    $SCANNER_HOME/bin/sonar-scanner ^
+                    -Dsonar.url=http://localhost:9000/ ^
+                    -Dsonar.login=sqa_38f523eff0fe2cc5a1fd3658ae51769277f3bf09 ^
+                    -Dsonar.projectKey=eleccion_online ^
+                    -Dsonar.projectName=eleccion_online ^
+                    -Dsonar.python.coverage.reportPaths=coverage.xml ^
+                    -Dsonar.sources=. ^
+                    -Dsonar.python.version=3.10.10 ^
+                """
+            }
+        }
+
+        stage('Start FastAPi Server') {
+            steps {
+                script {
+                    bat '''
+                        call venv\\Scripts\\activate
+                        start /B uvicorn app.main:app --reload
+                    '''
+                }
+                sleep time: 10, unit: 'SECONDS'
+            }
+        }
+
+        stage('front end') {
+            steps {
+                checkout scmGit(branches: [[name: 'main']], extensions: [], userRemoteConfigs: [[url: 'https://github.com/helvetios16/eleccionFT.git']])    
+            }
+        }
+
+        stage('instalacion de dependencias') {
+            steps {
+                bat '''
+                REM Instalar dependencias usando bun
+                bun install
+                '''
+            }
+        }
+
+        stage('lanzamiento-frontend') {
+            steps {
+                git branch: 'main', url: 'https://github.com/helvetios16/eleccionFT'
+                bat '''
+                REM Lanzar el servidor de desarrollo del front-end en segundo plano
+                start /B bun dev --detach
+                '''
+                sleep time: 10, unit: 'SECONDS'
+            }
+        }
+
+        stage('Jmeter test') {
+            steps {
+                git branch: 'desarrollo_API', url: 'https://github.com/chuancao26/elecciones_online'
+                bat '''
+                REM Iniciando JMeter test
+                C:\\Users\\USER\\Downloads\\apache-jmeter-5.6.3\\bin\\jmeter -Jmeter.save.saveservice.output_format=xml -n -t "performance_Jmeter.jmx" -l results.jtl
+                '''
+            }
+        }
+
+        stage('Publish Jmeter Report') {
+            steps {
+                perfReport filterRegex: '', sourceDataFiles: '**/*.jtl'
+            }
+        }
+
+        stage('OWASP Dependency-Check Vulnerabilities') {
+            steps {
+                dependencyCheck additionalArguments: '''
+                        -o './'
+                        -s './'
+                        -f 'ALL'
+                        --prettyPrint''', odcInstallation: 'OWASP Dependency-Check Vulnerabilities'
+                dependencyCheckPublisher pattern: 'dependency-check-report.xml'
+            }
+        }
+    }
+}
+```
+
+Este pipeline asegura un flujo de trabajo eficiente y confiable para la integración y despliegue continuo del proyecto.
+
 
 ---
 

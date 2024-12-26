@@ -51,6 +51,8 @@ El propósito de este proyecto es desarrollar una aplicación web de votaciones 
 
 La planificación de tareas de implementación se gestiona usando la herramienta Projects de Github. Puedes ver el tablero con todas las tareas del proyecto en el siguiente enlace:  
 [Sistema de Elecciones - Projects](https://github.com/users/chuancao26/projects/4)  
+![image](https://github.com/user-attachments/assets/f9eefc39-2044-4ae6-b874-5ee3c8b10b65)
+
 
 ### Documentación
 

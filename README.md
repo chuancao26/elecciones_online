@@ -97,33 +97,142 @@ El proyecto incluye un pipeline de CI/CD configurado para automatizar tareas cla
 3. **Instalación de Dependencias con Poetry**:
    - Instalación del gestor de dependencias Poetry.
    - Instalación de las dependencias definidas en `pyproject.toml`.
+   ```groovy
+     stage('Poetry') {
+            steps {
+                bat '''
+                REM Activar el entorno virtual
+                call venv\\Scripts\\activate
+
+                REM Instalar poetry
+                pip install poetry
+
+                REM Instalar las dependencias definidas en pyproject.toml
+                poetry install
+                '''
+            }
+        }
+   ```
 
 4. **Migraciones de Base de Datos**:
    - Ejecución de migraciones de base de datos utilizando Alembic para asegurar que la base de datos esté actualizada.
+     ```groovy
+        stage('alembic') {
+            steps {
+                bat '''
+                REM Activar el entorno virtual
+                call venv\\Scripts\\activate
+
+                REM Migrar la base de datos a la versión más reciente
+                alembic upgrade head
+                '''
+            }
+        }
+   ```
 
 5. **Ejecución de Pruebas con Pytest**:
    - Ejecución de pruebas unitarias y generación de un reporte de cobertura de código.
+   ```groovy
+        stage('pytest') {
+            steps {
+                git branch: 'desarrollo_API', url: 'https://github.com/chuancao26/elecciones_online'
+                bat '''
+                REM Activar el entorno virtual
+                call venv\\Scripts\\activate
+
+                REM Ejecutar pytest en el archivo de prueba
+                coverage run -m pytest
+                coverage xml
+                '''
+            }
+        }
+   ```
 
 6. **Análisis de Calidad de Código con SonarQube**:
    - Configuración y ejecución del análisis estático del código para detectar errores y medir calidad.
+   ```groovy
+        stage("SonarQube Analysis") {
+            steps {
+                bat """
+                    $SCANNER_HOME/bin/sonar-scanner ^
+                    -Dsonar.url=http://localhost:9000/ ^
+                    -Dsonar.login=sqa_38f523eff0fe2cc5a1fd3658ae51769277f3bf09 ^
+                    -Dsonar.projectKey=eleccion_online ^
+                    -Dsonar.projectName=eleccion_online ^
+                    -Dsonar.python.coverage.reportPaths=coverage.xml ^
+                    -Dsonar.sources=. ^
+                    -Dsonar.python.version=3.10.10 ^
+                """
+            }
+        }
+   ```
 
 7. **Inicio del Servidor FastAPI**:
    - Inicia el servidor de desarrollo del backend con Uvicorn en segundo plano.
+   ```groovy
+        stage('Start FastAPi Server') {
+            steps {
+                script {
+                    bat '''
+                        call venv\\Scripts\\activate
+                        start /B uvicorn app.main:app --reload
+                    '''
+                }
+                sleep time: 10, unit: 'SECONDS'
+            }
+        }
+   ```
 
 8. **Preparación del Frontend**:
    - Clonación del repositorio del frontend y ejecución del comando `bun install` para instalar dependencias.
-
-9. **Lanzamiento del Servidor Frontend**:
-   - Inicia el servidor de desarrollo del frontend en segundo plano con `bun dev`.
-
-10. **Pruebas de Rendimiento con JMeter**:
+   ```groovy
+        stage('instalacion de dependencias') {
+            steps {
+                bat '''
+                REM Instalar dependencias usando bun
+                bun install
+                '''
+            }
+        }
+   ```
+9. **Pruebas de Rendimiento con JMeter**:
     - Ejecución de pruebas de rendimiento utilizando JMeter y generación de reportes.
+   ```groovy
+        stage('Jmeter test') {
+            steps {
+                git branch: 'desarrollo_API', url: 'https://github.com/chuancao26/elecciones_online'
+                bat '''
+                REM Iniciando JMeter test
+                C:\\Users\\USER\\Downloads\\apache-jmeter-5.6.3\\bin\\jmeter -Jmeter.save.saveservice.output_format=xml -n -t "performance_Jmeter.jmx" -l results.jtl
+                '''
+            }
+        }
+   ```
 
-11. **Publicación del Reporte de JMeter**:
+10. **Publicación del Reporte de JMeter**:
     - Publicación de los resultados de las pruebas de rendimiento en el pipeline.
+   ```groovy
+        stage('Publish Jmeter Report') {
+            steps {
+                perfReport filterRegex: '', sourceDataFiles: '**/*.jtl'
+            }
+        }
+   ```
 
-12. **Verificación de Vulnerabilidades con OWASP Dependency-Check**:
+11. **Verificación de Vulnerabilidades con OWASP Dependency-Check**:
     - Análisis de las dependencias del proyecto para identificar vulnerabilidades de seguridad conocidas.
+   ```groovy
+        stage('OWASP Dependency-Check Vulnerabilities') {
+            steps {
+                dependencyCheck additionalArguments: '''
+                        -o './'
+                        -s './'
+                        -f 'ALL'
+                        --prettyPrint''', odcInstallation: 'OWASP Dependency-Check Vulnerabilities'
+                dependencyCheckPublisher pattern: 'dependency-check-report.xml'
+            }
+        }
+   ```
 
 ### Definición del Pipeline
 

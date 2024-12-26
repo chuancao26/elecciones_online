@@ -27,6 +27,16 @@ El propósito de este proyecto es desarrollar una aplicación web de votaciones 
 - **Promover la transparencia:** Asegurar que todo el proceso sea transparente y verificable, permitiendo a los participantes y organizadores auditar y revisar los resultados.  
 - **Mejorar la gestión electoral:** Ofrecer herramientas para la administración y supervisión de las votaciones, simplificando la organización y el conteo de votos.  
 - **Garantizar la integridad y seguridad:** Implementar medidas robustas para asegurar que el proceso de votación sea seguro y que los resultados sean precisos y confiables.  
+#### Home
+![image](https://github.com/user-attachments/assets/7800bc9a-11f6-4c9e-9c24-21d04e1a85c0)
+#### Registro 
+![image](https://github.com/user-attachments/assets/dab8c3e4-a2f5-47ab-8565-c9ceaf0e189c)
+#### Login
+![image](https://github.com/user-attachments/assets/748dbf87-67f7-41a4-9e9b-934c297dd621)
+#### Elector Dashboard
+![image](https://github.com/user-attachments/assets/0c8a7aee-659b-4c27-a35d-1ce69e9fd79e)
+#### Admin Dashboard
+![image](https://github.com/user-attachments/assets/50da105f-e7f5-4702-a87e-290fed3eb808)
 
 ---
 
@@ -267,8 +277,7 @@ pipeline {
 ```
 
 Este pipeline asegura un flujo de trabajo eficiente y confiable para la integración y despliegue continuo del proyecto.
-
-
+![image](https://github.com/user-attachments/assets/dd2cff6c-89b5-46a1-9848-9f83edb1ce5e)
 ---
 
 ## Requisitos Previos

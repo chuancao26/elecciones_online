@@ -388,6 +388,7 @@ pipeline {
 ```
 
 Este pipeline asegura un flujo de trabajo eficiente y confiable para la integración y despliegue continuo del proyecto.
+
 ![image](https://github.com/user-attachments/assets/dd2cff6c-89b5-46a1-9848-9f83edb1ce5e)
 ---
 

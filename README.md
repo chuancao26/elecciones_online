@@ -433,7 +433,8 @@ pipeline {
 
 Este pipeline asegura un flujo de trabajo eficiente y confiable para la integración y despliegue continuo del proyecto.
 
-![image](https://github.com/user-attachments/assets/dd2cff6c-89b5-46a1-9848-9f83edb1ce5e)
+![image](https://github.com/user-attachments/assets/49f3d783-22f5-4e5e-ab01-dcee66ae8588)
+
 ---
 ### Lanzamiento automatico del pipeline con Github
 1. **WebHook**

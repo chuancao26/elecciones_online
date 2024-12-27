@@ -427,6 +427,11 @@ Este pipeline asegura un flujo de trabajo eficiente y confiable para la integrac
 
 ![image](https://github.com/user-attachments/assets/dd2cff6c-89b5-46a1-9848-9f83edb1ce5e)
 ---
+### Lanzamiento automatico del pipeline con Github
+1. **WebHook**
+![image](https://github.com/user-attachments/assets/f36f9703-cd5a-4ad7-a99b-2543e4e0f0bb)
+2. **Habilitacion Jenkins**
+![image](https://github.com/user-attachments/assets/19bd408d-e478-45a4-b1e3-078588c0a391)
 
 ## Requisitos Previos
 

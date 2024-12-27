@@ -158,12 +158,12 @@ El proyecto incluye un pipeline de CI/CD configurado para automatizar tareas cla
 6. **Análisis de Calidad de Código con SonarQube**:
    - Configuración y ejecución del análisis estático del código para detectar errores y medir calidad.
    - -Dsonar.url=http://localhost:9000/: Especifica la URL del servidor de SonarQube donde se subirán los resultados del análisis.
--Dsonar.login=sqa_38f523eff0fe2cc5a1fd3658ae51769277f3bf09: Proporciona el token de autenticación necesario para conectar con el servidor.
--Dsonar.projectKey=eleccion_online: Define una clave única para identificar el proyecto en SonarQube.
--Dsonar.projectName=eleccion_online: Especifica el nombre del proyecto que aparecerá en la interfaz de SonarQube.
--Dsonar.python.coverage.reportPaths=coverage.xml: Proporciona el archivo coverage.xml generado por pytest para analizar la cobertura del código Python.
--Dsonar.sources=.: Indica que el código fuente a analizar está en el directorio actual.
--Dsonar.python.version=3.10.10: Especifica la versión de Python utilizada en el proyecto para que el análisis esté alineado con las configuraciones del entorno.
+   - -Dsonar.login=sqa_38f523eff0fe2cc5a1fd3658ae51769277f3bf09: Proporciona el token de autenticación necesario para conectar con el servidor.
+   - -Dsonar.projectKey=eleccion_online: Define una clave única para identificar el proyecto en SonarQube.
+   - -Dsonar.projectName=eleccion_online: Especifica el nombre del proyecto que aparecerá en la interfaz de SonarQube.
+   - -Dsonar.python.coverage.reportPaths=coverage.xml: Proporciona el archivo coverage.xml generado por pytest para analizar la cobertura del código Python.
+   - -Dsonar.sources=.: Indica que el código fuente a analizar está en el directorio actual.
+   - -Dsonar.python.version=3.10.10: Especifica la versión de Python utilizada en el proyecto para que el análisis esté alineado con las configuraciones del entorno.
    ```groovy
         stage("SonarQube Analysis") {
             steps {

@@ -12,10 +12,13 @@ router = APIRouter(
     tags=["elector"],
     prefix="/elector"
 )
+
+
 def create_persona(new_persona: models.Persona, db: Session = Depends(get_db)):
     db.add(new_persona)
     db.commit()
     db.refresh(new_persona)
+
 
 @router.get("/", response_model=List[schemas.PersonaOut])
 def get_persona(db: Session = Depends(get_db),
@@ -29,6 +32,8 @@ def get_persona(db: Session = Depends(get_db),
         .all()
     )
     return elector
+
+
 @router.post("/", status_code=status.HTTP_201_CREATED, response_model=schemas.PersonaOut)
 def create_elector(elector: schemas.PersonaCreate, db: Session = Depends(get_db)):
     persona = (
@@ -60,6 +65,8 @@ def create_elector(elector: schemas.PersonaCreate, db: Session = Depends(get_db)
         .first()
     )
     return elector
+
+
 @router.get("/{id}", response_model=schemas.PersonaOut)
 def get_elector(id: int, db: Session = Depends(get_db), 
                 current_user: schemas.TokenData = Depends(oauth2.get_current_admin)):
@@ -75,6 +82,8 @@ def get_elector(id: int, db: Session = Depends(get_db),
     if elector is None:
         raise HTTPException(status_code=404, detail=f"user with id: {id} not found")
     return elector
+
+
 @router.put("/", response_model=schemas.PersonaOut)
 def update_elector(new_elector: schemas.PersonaUpdate,
                    db: Session = Depends(get_db),

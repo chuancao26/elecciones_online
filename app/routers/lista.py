@@ -17,6 +17,7 @@ def get_lists(db: Session = Depends(get_db)):
     lists = db.query(models.Lista).all()
     return lists
 
+
 @router.get("/{id}", response_model=schemas.ListaOut)
 def get_lists(id: int,
               db: Session = Depends(get_db),
@@ -25,6 +26,7 @@ def get_lists(id: int,
     if lista is None:
         raise HTTPException(status_code=404, detail=f"Lista with id: {id} not found")
     return lista
+    
     
 @router.post("/", status_code=status.HTTP_201_CREATED, response_model=schemas.ListaOut)
 def create_list(list: schemas.ListaCreate, db: Session = Depends(get_db),
@@ -39,6 +41,7 @@ def create_list(list: schemas.ListaCreate, db: Session = Depends(get_db),
     db.commit()
     db.refresh(new_list)
     return new_list
+
 
 @router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_list(id: int, db: Session = Depends(get_db),

@@ -10,10 +10,12 @@ from sqlalchemy.exc import IntegrityError
 
 router = APIRouter(prefix="/eleccion",
                    tags=["eleccion"])
+
 @router.get("/", response_model=List[schemas.EleccionOut])
 def get_elections(db: Session = Depends(get_db)):
     elections = db.query(models.Eleccion).all()
     return elections
+
 
 @router.post("/", response_model=schemas.EleccionOut)
 def create_election(election: schemas.EleccionCreate, db: Session = Depends(get_db), 
@@ -29,6 +31,7 @@ def create_election(election: schemas.EleccionCreate, db: Session = Depends(get_
         raise HTTPException(status_code=status.HTTP_400_CONFLICT,
                             detail="election already exists")
 
+
 @router.get("/{id}", response_model=schemas.EleccionOut)
 def get_election(id: int, db: Session = Depends(get_db),
                  current_user: schemas.TokenData = Depends(oauth2.get_current_admin)):
@@ -36,6 +39,7 @@ def get_election(id: int, db: Session = Depends(get_db),
     if election.first() is None:
         raise HTTPException(status_code=404, detail=f"id: {id} not found")
     return election.first()
+
 
 @router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_election(id: int, db: Session = Depends(get_db), 
@@ -46,6 +50,7 @@ def delete_election(id: int, db: Session = Depends(get_db),
     election.delete(synchronize_session=False)
     db.commit()
     return HTTPException(status_code=status.HTTP_204_NO_CONTENT)
+
 
 @router.put("/{id}", response_model=schemas.EleccionOut, status_code=status.HTTP_200_OK)
 def update_election(election: schemas.EleccionCreate, id: int, db: Session = Depends(get_db),

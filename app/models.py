@@ -12,15 +12,18 @@ class Persona(Base):
     usuario = Column(String, unique = True, nullable = True)
     password = Column(String, nullable=False)
 
+
 class Elector(Base):
     __tablename__ = "elector"
     id = Column(Integer, primary_key=True, autoincrement=True)
     id_persona = Column(Integer, ForeignKey("persona.id", ondelete="CASCADE"), nullable=True)
 
+
 class Administrador(Base):
     __tablename__ = "administrador"
     id = Column(Integer, primary_key=True, autoincrement=True)
     id_persona = Column(Integer, ForeignKey("persona.id", ondelete="CASCADE"), nullable=True)
+
 
 class Eleccion(Base):
     __tablename__ = "eleccion"
@@ -30,6 +33,7 @@ class Eleccion(Base):
     hora_fin = Column(Time, nullable=False)
     descripcion = Column(String, nullable=False, server_default="")
 
+
 class Lista(Base):
     __tablename__ = "lista"
     id = Column(Integer, primary_key=True, autoincrement=True)
@@ -38,6 +42,7 @@ class Lista(Base):
     propuesta = Column(String, nullable=False, server_default="")
     eleccion = Relationship("Eleccion")
 
+
 class Candidato(Base):
     __tablename__ = "candidato"
     id = Column(Integer, primary_key=True, autoincrement=True)
@@ -45,6 +50,7 @@ class Candidato(Base):
     apellido_paterno = Column(String, nullable = False)
     apellido_materno = Column(String, nullable = False)
     id_lista = Column(ForeignKey("lista.id", ondelete="CASCADE"), nullable=False)
+
 
 class Voto(Base):
     __tablename__ = "voto"

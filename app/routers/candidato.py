@@ -32,6 +32,7 @@ def create_candidate(candidate: schemas.CandidatoCreate,
         raise HTTPException(status_code=409,
                             detail=f"candidato with problems, change information!")
 
+
 @router.get("/{id}", response_model=schemas.CandidatoCreate)
 def get_a_candidate(id: int,
                     db: Session=Depends(get_db)):
@@ -39,6 +40,7 @@ def get_a_candidate(id: int,
     if candidate.first() is None:
         raise HTTPException(status_code=404, detail=f"Candidato with id: {id} does not exist!")
     return candidate.first()
+
 
 @router.get("/", response_model=List[schemas.CandidatoOut])
 def get_candidates(db: Session=Depends(get_db)):
@@ -49,6 +51,7 @@ def get_candidates(db: Session=Depends(get_db)):
     ) 
     result = [{"candidato": candidate, "nombre_lista": name } for candidate, name in candidates]
     return result
+
 
 @router.put("/{id}", response_model=schemas.CandidatoCreate,
             status_code=202)
@@ -61,6 +64,8 @@ def update_a_candidate(id: int, new_candidate: schemas.CandidatoCreate,
     current_candidate.update(new_candidate.model_dump(), synchronize_session=False)
     db.commit()
     return current_candidate.first()
+
+
 @router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
 def delete_a_candidate(id: int,
                        db: Session=Depends(get_db),

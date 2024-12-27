@@ -14,6 +14,8 @@ router = APIRouter(
     prefix="/voto",
     tags=["voto"]
 )
+
+
 @router.post("/", status_code=202)
 def create_vote(vote: schemas.VotoCreate,
                 db: Session = Depends(get_db),

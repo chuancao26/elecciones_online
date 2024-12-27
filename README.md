@@ -409,14 +409,22 @@ pipeline {
             }
         }
 
-        stage('OWASP Dependency-Check Vulnerabilities') {
+        stage('OWASP ZAP Security Scan') {
             steps {
-                dependencyCheck additionalArguments: '''
-                        -o './'
-                        -s './'
-                        -f 'ALL'
-                        --prettyPrint''', odcInstallation: 'OWASP Dependency-Check Vulnerabilities'
-                dependencyCheckPublisher pattern: 'dependency-check-report.xml'
+                dir('ReportZAP') {
+                    script {
+                        def zap_jar_path = '"C:/Program Files/ZAP/Zed Attack Proxy/zap-2.15.0.jar"'
+                        def target_url = 'http://localhost:8000'
+                        def report_path = 'zap-reports/zap-report.html'
+                        bat 'if not exist zap-reports mkdir zap-reports'
+                        bat "java -Xmx512m -jar ${zap_jar_path} -cmd -host localhost -port 8097 -quickurl ${target_url} -quickout ${report_path}"
+                    }
+                }
+            }
+            post {
+                always {
+                    archiveArtifacts artifacts: 'ReportZAP/zap-reports/zap-report.html', fingerprint: true
+                }
             }
         }
     }

@@ -166,6 +166,7 @@ El proyecto incluye un pipeline de CI/CD configurado para automatizar tareas cla
             }
         }
    ```
+![image](https://github.com/user-attachments/assets/762f8cea-4fd4-4d2e-9199-bf1d23b24ab8)
 
 7. **Inicio del Servidor FastAPI**:
    - Inicia el servidor de desarrollo del backend con Uvicorn en segundo plano.

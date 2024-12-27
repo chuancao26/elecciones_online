@@ -116,6 +116,9 @@ El proyecto incluye un pipeline de CI/CD configurado para automatizar tareas cla
 
 4. **Migraciones de Base de Datos**:
    - Ejecución de migraciones de base de datos utilizando Alembic para asegurar que la base de datos esté actualizada.
+   - Se ejecuta el comando call venv\Scripts\activate para activar el entorno virtual Python ubicado en la carpeta venv. Esto asegura que se usen las dependencias y configuraciones específicas del proyecto.
+
+   - El comando alembic upgrade head se utiliza para migrar la base de datos a la versión más reciente definida en los archivos de migración de Alembic. Esto aplica los cambios necesarios a la estructura de la base de datos, como la creación, eliminación o modificación de tablas y columnas, de acuerdo con las migraciones definidas.
      ```groovy
         stage('alembic') {
             steps {
@@ -132,6 +135,10 @@ El proyecto incluye un pipeline de CI/CD configurado para automatizar tareas cla
 
 5. **Ejecución de Pruebas con Pytest**:
    - Ejecución de pruebas unitarias y generación de un reporte de cobertura de código.
+   - Utiliza el comando git para clonar el repositorio desde la URL https://github.com/chuancao26/elecciones_online y cambiar a la rama desarrollo_API. Esto asegura que se trabaja con la versión específica del código en desarrollo.
+   - Ejecuta el comando call venv\Scripts\activate para habilitar el entorno virtual Python del proyecto, garantizando que las dependencias necesarias estén disponibles.
+   - Se utiliza coverage run -m pytest para ejecutar las pruebas definidas en el proyecto con pytest. Además de realizar las pruebas, coverage mide cuánto del código fuente está siendo cubierto por estas pruebas.
+   - Ejecuta el comando coverage xml, que produce un archivo XML con los detalles del reporte de cobertura de código. Este archivo puede ser utilizado por otras herramientas para analizar y visualizar la cobertura.
    ```groovy
         stage('pytest') {
             steps {
@@ -150,6 +157,13 @@ El proyecto incluye un pipeline de CI/CD configurado para automatizar tareas cla
 
 6. **Análisis de Calidad de Código con SonarQube**:
    - Configuración y ejecución del análisis estático del código para detectar errores y medir calidad.
+   - -Dsonar.url=http://localhost:9000/: Especifica la URL del servidor de SonarQube donde se subirán los resultados del análisis.
+-Dsonar.login=sqa_38f523eff0fe2cc5a1fd3658ae51769277f3bf09: Proporciona el token de autenticación necesario para conectar con el servidor.
+-Dsonar.projectKey=eleccion_online: Define una clave única para identificar el proyecto en SonarQube.
+-Dsonar.projectName=eleccion_online: Especifica el nombre del proyecto que aparecerá en la interfaz de SonarQube.
+-Dsonar.python.coverage.reportPaths=coverage.xml: Proporciona el archivo coverage.xml generado por pytest para analizar la cobertura del código Python.
+-Dsonar.sources=.: Indica que el código fuente a analizar está en el directorio actual.
+-Dsonar.python.version=3.10.10: Especifica la versión de Python utilizada en el proyecto para que el análisis esté alineado con las configuraciones del entorno.
    ```groovy
         stage("SonarQube Analysis") {
             steps {

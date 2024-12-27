@@ -234,17 +234,38 @@ El proyecto incluye un pipeline de CI/CD configurado para automatizar tareas cla
         }
    ```
 
-11. **Verificación de Vulnerabilidades con OWASP Dependency-Check**:
-    - Análisis de las dependencias del proyecto para identificar vulnerabilidades de seguridad conocidas.
+11. **Verificación de Vulnerabilidades con OWASP ZAP**:
+    - Análisis del proyecto para identificar vulnerabilidades de seguridad conocidas.
+    - El análisis se realiza dentro del directorio ReportZAP, que se establece usando dir('ReportZAP').
+   - Se define el path al archivo JAR de ZAP: def zap_jar_path = '"C:/Program Files/ZAP/Zed Attack Proxy/zap-2.15.0.jar"'.
+   - Se especifica la URL objetivo del análisis: def target_url = 'http://localhost:8000'.
+   - Se establece la ruta donde se guardará el reporte: def report_path = 'zap-reports/zap-report.html'.
+   - Crea el directorio zap-reports si no existe: bat 'if not exist zap-reports mkdir zap-reports'.
+   - Ejecuta ZAP con las siguientes opciones:
+      - cmd: Ejecuta ZAP en modo de línea de comandos.
+      - host localhost: Define el host donde se ejecutará ZAP.
+      - port 8097: Especifica el puerto para ZAP.
+      - quickurl ${target_url}: Indica la URL objetivo para el escaneo.
+      - quickout ${report_path}: Especifica la ubicación del reporte generado.
+   - Siempre que se ejecute el stage, se archiva el reporte generado (zap-report.html) para que esté disponible en los resultados del pipeline.
+   - La línea archiveArtifacts artifacts: 'ReportZAP/zap-reports/zap-report.html', fingerprint: true asegura que el reporte quede almacenado como un artefacto con huella digital.
    ```groovy
-        stage('OWASP Dependency-Check Vulnerabilities') {
+        stage('OWASP ZAP Security Scan') {
             steps {
-                dependencyCheck additionalArguments: '''
-                        -o './'
-                        -s './'
-                        -f 'ALL'
-                        --prettyPrint''', odcInstallation: 'OWASP Dependency-Check Vulnerabilities'
-                dependencyCheckPublisher pattern: 'dependency-check-report.xml'
+                dir('ReportZAP') {
+                    script {
+                        def zap_jar_path = '"C:/Program Files/ZAP/Zed Attack Proxy/zap-2.15.0.jar"'
+                        def target_url = 'http://localhost:8000'
+                        def report_path = 'zap-reports/zap-report.html'
+                        bat 'if not exist zap-reports mkdir zap-reports'
+                        bat "java -Xmx512m -jar ${zap_jar_path} -cmd -host localhost -port 8097 -quickurl ${target_url} -quickout ${report_path}"
+                    }
+                }
+            }
+            post {
+                always {
+                    archiveArtifacts artifacts: 'ReportZAP/zap-reports/zap-report.html', fingerprint: true
+                }
             }
         }
    ```
